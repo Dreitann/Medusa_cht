@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Личный кабинет</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2.38.3/dist/umd/supabase.min.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      background-color: #121212;
+      color: white;
+      overflow-x: hidden;
+    }
+    header {
+      padding: 1em;
+      text-align: center;
+      background-color: #1f1f1f;
+      font-size: 1.2em;
+    }
+    .content {
+      padding: 1em;
+      display: none;
+    }
+    .content.active {
+      display: block;
+    }
+    .tabbar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background-color: #1f1f1f;
+      border-top: 1px solid #333;
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 0.7em 0;
+      color: #aaa;
+    }
+    .tab.active {
+      color: #00bcd4;
+      font-weight: bold;
+    }
+    .block {
+      background: #1e1e1e;
+      margin: 1em 0;
+      padding: 1em;
+      border-radius: 10px;
+    }
+    input[type=file], button {
+      margin-top: 10px;
+      display: block;
+      width: 100%;
+    }
+    ul {
+      padding-left: 1.2em;
+    }
+    @media screen and (max-width: 600px) {
+      header { font-size: 1em; }
+      .block { font-size: 0.95em; }
+      .tabbar { font-size: 1em; }
+    }
+  </style>
+</head>
+<body>
+
+<header>Привет, <span id="username">...</span>!</header>
+
+<div id="schedule" class="content active">
+  <div class="block">
+    <h3>📅 Расписание</h3>
+    <ul id="schedule-list"><li>Загрузка...</li></ul>
+  </div>
+</div>
+
+<div id="homework" class="content">
+  <div class="block">
+    <h3>📂 Домашка</h3>
+    <input type="file" id="hwfile" />
+    <button onclick="uploadHomework()">Загрузить</button>
+    <div id="upload-status"></div>
+  </div>
+</div>
+
+<div class="tabbar">
+  <div class="tab active" onclick="switchTab('schedule')">📅</div>
+  <div class="tab" onclick="switchTab('homework')">📂</div>
+</div>
+
+<script>
+  const supabase = window.supabase.createClient(
+    "https://lwmervaxwrllgykcjfpn.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  );
+  const tg = window.Telegram.WebApp;
+  tg.expand();
+
+  const userId = tg.initDataUnsafe.user?.id || 0;
+  const firstName = tg.initDataUnsafe.user?.first_name || "Ученик";
+  document.getElementById("username").innerText = firstName;
+
+  function switchTab(id) {
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tabbar .tab').forEach(t => {
+      if (t.getAttribute('onclick').includes(id)) t.classList.add('active');
+    });
+  }
+
+  async function ensureUser() {
+    const { error } = await supabase.from("users").upsert({ id: userId, first_name: firstName });
+    if (error) alert("❌ Ошибка создания пользователя: " + error.message);
+  }
+
+  async function loadSchedule() {
+    const { data, error } = await supabase.from("schedule").select("*").eq("user_id", userId);
+    const list = document.getElementById("schedule-list");
+    list.innerHTML = "";
+    if (error) {
+      list.innerHTML = "<li>Ошибка загрузки: " + error.message + "</li>";
+      return;
+    }
+    if (!data || data.length === 0) {
+      list.innerHTML = "<li>Нет данных для отображения</li>";
+      return;
+    }
+    data.forEach(item => {
+      const li = document.createElement("li");
+      li.innerText = `${item.day} ${item.time} — ${item.subject}`;
+      list.appendChild(li);
+    });
+  }
+
+  async function uploadHomework() {
+    const file = document.getElementById("hwfile").files[0];
+    const path = `${userId}/${Date.now()}_${file.name}`;
+    const { data, error } = await supabase.storage.from("homework").upload(path, file);
+    document.getElementById("upload-status").innerText = error
+      ? "❌ Ошибка: " + error.message
+      : "✅ Загружено: " + data.path;
+  }
+
+  ensureUser().then(loadSchedule);
+</script>
+
+</body>
+</html>
