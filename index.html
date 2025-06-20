@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Личный кабинет (Supabase)</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="js/supabaseClient.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>Привет, <span id="username">...</span>!</header>
+
+  <main>
+    <section id="schedule" class="content active">
+      <div class="block">
+        <h3>📅 Расписание</h3>
+        <ul id="schedule-list"><li>Загрузка...</li></ul>
+      </div>
+    </section>
+
+    <section id="homework" class="content">
+      <div class="block">
+        <h3>📂 Домашка</h3>
+        <input type="file" id="hwfile" />
+        <button onclick="uploadHomework()">Загрузить</button>
+        <div id="upload-status"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <div class="tab active" onclick="switchTab('schedule')">📅</div>
+    <div class="tab" onclick="switchTab('homework')">📂</div>
+  </nav>
+</body>
+</html>
