@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DEBUG WebApp</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2.38.3/dist/umd/supabase.min.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: monospace;
+      background: #121212;
+      color: #fff;
+      padding: 1em;
+    }
+    h1 {
+      color: #00bcd4;
+    }
+    pre {
+      background: #1e1e1e;
+      padding: 1em;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🧪 Telegram WebApp Debug</h1>
+
+<p><strong>Telegram user:</strong> <span id="user"></span></p>
+<p><strong>Status:</strong> <span id="status">Загрузка...</span></p>
+
+<h2>📋 schedule response</h2>
+<pre id="response">...</pre>
+
+<script>
+  const supabase = window.supabase.createClient(
+    "https://lwmervaxwrllgykcjfpn.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  );
+  const tg = window.Telegram.WebApp;
+  tg.expand();
+
+  const userId = tg.initDataUnsafe.user?.id || 0;
+  const firstName = tg.initDataUnsafe.user?.first_name || "Нет имени";
+  document.getElementById("user").innerText = `${userId} (${firstName})`;
+
+  async function ensureUser() {
+    const { error } = await supabase.from("users").upsert({ id: userId, first_name: firstName });
+    if (error) document.getElementById("status").innerText = "❌ Ошибка создания пользователя: " + error.message;
+  }
+
+  async function debugSchedule() {
+    const { data, error } = await supabase.from("schedule").select("*").eq("user_id", userId);
+    const out = document.getElementById("response");
+    if (error) {
+      document.getElementById("status").innerText = "❌ Ошибка запроса schedule";
+      out.innerText = JSON.stringify(error, null, 2);
+    } else {
+      document.getElementById("status").innerText = "✅ OK";
+      out.innerText = JSON.stringify(data, null, 2);
+    }
+  }
+
+  ensureUser().then(debugSchedule);
+</script>
+
+</body>
+</html>
