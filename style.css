@@ -1,0 +1,47 @@
+body {
+  margin: 0;
+  font-family: -apple-system, sans-serif;
+  background: #121212;
+  color: white;
+}
+header {
+  background: #1f1f1f;
+  padding: 8px 16px;
+  font-size: 16px;
+}
+header #welcome {
+  font-weight: bold;
+}
+main {
+  padding: 16px;
+  padding-bottom: 100px;
+}
+.tab { display: none; }
+.tab.active { display: block; }
+.card-container {
+  display: flex; flex-direction: column; gap: 12px; margin-top: 12px;
+}
+.card {
+  background: #1e1e1e; padding: 12px; border-radius: 8px; border: 1px solid #333;
+}
+.card-title { font-weight: bold; margin-bottom: 6px; }
+.tab-bar {
+  position: fixed; bottom: 0; width: 100%; background: #1f1f1f;
+  display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid #333; z-index:1000;
+}
+.tab-bar button {
+  background: none; border: none; color: #ccc; font-size: 14px; padding: 8px;
+  flex-grow:1; text-align:center; line-height:1.2;
+}
+.tab-bar button:hover, .tab-bar button.active {
+  background: #333; color: #fff;
+}
+#calendar {
+  max-width: 100%; margin: 0 auto; background: #1e1e1e; border-radius:8px; padding:8px;
+}
+.fc .fc-col-header-cell-cushion { color: #ccc; }
+.fc .fc-daygrid-day-number { color: #aaa; }
+input[type=file], button, input[type=text] {
+  display: block; margin-top:10px; padding:10px; width:100%;
+}
+a { color: #00bcd4; }
