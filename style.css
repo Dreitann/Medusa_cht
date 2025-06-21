@@ -1,0 +1,34 @@
+
+body {
+  background-color: #121212;
+  color: white;
+  font-family: sans-serif;
+  margin: 0;
+  padding: 1rem;
+}
+header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.block {
+  background: #1f1f1f;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+h1, h2 {
+  color: #00bcd4;
+}
+pre {
+  background: #222;
+  padding: 0.75rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+#calendar-list {
+  list-style: none;
+  padding-left: 0;
+}
+#calendar-list li {
+  padding: 0.25rem 0;
+}
