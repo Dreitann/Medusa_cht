@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Личный кабинет</title>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+</head>
+<body>
+  <header>
+    <div id="welcome">Привет, <span id="student-name">Студент</span></div>
+  </header>
+  <main>
+    <section id="tab-next" class="tab active">
+      <div class="card">
+        <div class="card-title">🚀 Ближайшее занятие</div>
+        <div id="next-event-content">Загрузка…</div>
+      </div>
+    </section>
+    <section id="tab-schedule" class="tab">
+      <h2>📅 Расписание</h2>
+      <div id="calendar"></div>
+    </section>
+    <section id="tab-homework" class="tab">
+      <h2>📝 Домашние задания</h2>
+      <input type="file" id="hw-file">
+      <button onclick="uploadHomework()">Загрузить ДЗ</button>
+      <div id="hw-status"></div>
+      <h3>Мои файлы</h3>
+      <div id="hw-list" class="card-container">Загрузка…</div>
+    </section>
+    <section id="tab-video" class="tab">
+      <h2>🎥 Видеоматериалы</h2>
+      <input type="file" id="video-file" accept="video/*">
+      <input type="text" id="video-title" placeholder="Название видео">
+      <button onclick="uploadVideo()">Загрузить видео</button>
+      <div id="video-status"></div>
+      <h3>Список видео</h3>
+      <div id="video-list" class="card-container">Загрузка…</div>
+    </section>
+  </main>
+  <nav class="tab-bar">
+    <button onclick="openTab('next')">🔥 Событие</button>
+    <button onclick="openTab('schedule')">📅 Расписание</button>
+    <button onclick="openTab('homework')">📝 Домашка</button>
+    <button onclick="openTab('video')">🎥 Видео</button>
+  </nav>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
