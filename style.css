@@ -1,0 +1,62 @@
+
+body {
+  margin: 0;
+  font-family: -apple-system, sans-serif;
+  background: #121212;
+  color: white;
+}
+
+header {
+  background: #1f1f1f;
+  padding: 16px;
+  text-align: center;
+  font-size: 18px;
+}
+
+main {
+  padding: 16px;
+  padding-bottom: 80px;
+}
+
+.tab {
+  display: none;
+}
+.tab.active {
+  display: block;
+}
+
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #1f1f1f;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0;
+  border-top: 1px solid #333;
+  z-index: 1000;
+}
+
+.tab-bar button {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 18px;
+  padding: 12px 20px;
+  flex-grow: 1;
+  border-radius: 10px;
+}
+.tab-bar button:hover {
+  background: #333;
+}
+
+input[type="file"], button {
+  display: block;
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+}
+
+a {
+  color: #00bcd4;
+}

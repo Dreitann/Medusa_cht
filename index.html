@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Личный кабинет</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <header>
+    <h1>🎓 Добро пожаловать, <span id="student-name">Студент</span></h1>
+  </header>
+
+  <main>
+    <section id="tab-schedule" class="tab active">
+      <h2>📅 Расписание</h2>
+      <ul id="schedule-list">Загрузка...</ul>
+    </section>
+
+    <section id="tab-homework" class="tab">
+      <h2>📝 Домашние задания</h2>
+      <input type="file" id="hw-file">
+      <button onclick="uploadHomework()">Загрузить</button>
+      <div id="hw-status"></div>
+      <h3>Мои файлы</h3>
+      <ul id="hw-list">—</ul>
+    </section>
+
+    <section id="tab-video" class="tab">
+      <h2>🎥 Видеоматериалы</h2>
+      <ul id="video-list">Загрузка...</ul>
+    </section>
+  </main>
+
+  <nav class="tab-bar">
+    <button onclick="switchTab('schedule')">📅 Расписание</button>
+    <button onclick="switchTab('homework')">📝 Домашка</button>
+    <button onclick="switchTab('video')">🎥 Видео</button>
+  </nav>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
