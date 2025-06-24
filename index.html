@@ -6,6 +6,12 @@
   <title>Личный кабинет</title>
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    #calendar {
+      min-height: 400px;
+      z-index: 1;
+    }
+  </style>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 </head>
@@ -82,7 +88,7 @@
       const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         dateClick: (info) => {
-          const selectedDate = info.dateStr;
+          const selectedDate = info.date.toISOString().split('T')[0];
           const events = schedule.filter(ev => ev.date === selectedDate);
           if (events.length > 0) {
             eventListEl.innerHTML = events.map(ev =>
