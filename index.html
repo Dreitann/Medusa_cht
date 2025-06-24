@@ -41,13 +41,74 @@
       <h3>Список видео</h3>
       <div id="video-list" class="card-container">Загрузка…</div>
     </section>
+    <section id="tab-jitsi" class="tab">
+      <h2>🦚 Видеозвонок Jitsi</h2>
+      <div id="jitsi-container"></div>
+      <div id="jitsi-controls" style="margin-top:10px; display: flex; gap: 10px;">
+        <button onclick="jitsiApi.executeCommand('toggleAudio')">🎙 Микрофон</button>
+        <button onclick="jitsiApi.executeCommand('toggleVideo')">📷 Камера</button>
+        <button onclick="jitsiApi.executeCommand('toggleChat')">💬 Чат</button>
+        <button onclick="jitsiApi.executeCommand('toggleShareScreen')">🖥 Экран</button>
+        <button onclick="alertParticipants()">👥 Участники</button>
+        <button onclick="toggleWhiteboard()">📋 Whiteboard</button>
+      </div>
+    </section>
   </main>
   <nav class="tab-bar">
     <button id="btn-next">🔥<br>Событие</button>
     <button id="btn-schedule">📅<br>Расписание</button>
     <button id="btn-homework">📝<br>Домашка</button>
     <button id="btn-video">🎥<br>Видео</button>
+    <button id="btn-jitsi">🦚<br>Jitsi</button>
+
   </nav>
   <script type="module" src="js/app.js"></script>
+  <script src="https://meet.jit.si/external_api.js"></script>
+  <script>
+    let jitsiApi = null;
+    document.getElementById('btn-jitsi').addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-jitsi').classList.add('active');
+
+      if (!jitsiApi) {
+        jitsiApi = new JitsiMeetExternalAPI('meet.jit.si', {
+          roomName: 'MentoriumRoom123',
+          parentNode: document.getElementById('jitsi-container'),
+          width: '100%',
+          height: 400,
+          configOverwrite: {},
+          interfaceConfigOverwrite: {
+            TOOLBAR_BUTTONS: []
+          }
+        });
+        jitsiApi.addEventListener('videoConferenceJoined', () => {
+          console.log('Вошли в конференцию!');
+        });
+      }
+    });
+
+    // Add tab switching for other buttons too
+    ['btn-next', 'btn-schedule', 'btn-homework', 'btn-video'].forEach(id => {
+      document.getElementById(id).addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('tab-' + id.split('-')[1]).classList.add('active');
+      });
+    });
+
+    function alertParticipants() {
+      if (jitsiApi) {
+        jitsiApi.getParticipantsInfo().then(participants => {
+          const names = participants.map(p => p.displayName).join("\n");
+          alert("Участники:\n" + names);
+        });
+      }
+    }
+
+    function toggleWhiteboard() {
+      if (jitsiApi) {
+        jitsiApi.executeCommand('toggleWhiteboard');
+      }
+    }
+  </script>
 </body>
 </html>
