@@ -10,6 +10,7 @@
     #calendar {
       min-height: 400px;
       z-index: 1;
+      pointer-events: auto;
     }
   </style>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -85,35 +86,37 @@
 
       let schedule = [];
 
-      const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        dateClick: (info) => {
-          const selectedDate = info.date.toISOString().split('T')[0];
-          const events = schedule.filter(ev => ev.date === selectedDate);
-          if (events.length > 0) {
-            eventListEl.innerHTML = events.map(ev =>
-              `<li>${ev.time_from}–${ev.time_to} ${ev.subject} (${ev.group_name})</li>`
-            ).join('');
-          } else {
-            eventListEl.innerHTML = '<li>Нет занятий на выбранную дату</li>';
+      if (calendarEl) {
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          dateClick: (info) => {
+            const selectedDate = info.date.toISOString().split('T')[0];
+            const events = schedule.filter(ev => ev.date === selectedDate);
+            if (events.length > 0) {
+              eventListEl.innerHTML = events.map(ev =>
+                `<li>${ev.time_from}–${ev.time_to} ${ev.subject} (${ev.group_name})</li>`
+              ).join('');
+            } else {
+              eventListEl.innerHTML = '<li>Нет занятий на выбранную дату</li>';
+            }
           }
+        });
+
+        calendar.render();
+
+        const { data, error } = await supabase
+          .from('schedule')
+          .select('*')
+          .eq('user_id', user.id);
+
+        if (data && !error) {
+          schedule = data;
+          const events = data.map(ev => ({
+            title: ev.subject,
+            start: ev.date
+          }));
+          calendar.addEventSource(events);
         }
-      });
-
-      calendar.render();
-
-      const { data, error } = await supabase
-        .from('schedule')
-        .select('*')
-        .eq('user_id', user.id);
-
-      if (data && !error) {
-        schedule = data;
-        const events = data.map(ev => ({
-          title: ev.subject,
-          start: ev.date
-        }));
-        calendar.addEventSource(events);
       }
     });
   </script>
