@@ -9,8 +9,12 @@
   <style>
     #calendar {
       min-height: 400px;
-      z-index: 1;
+      z-index: 10;
       pointer-events: auto;
+      background: white;
+    }
+    .fc-daygrid-day-frame {
+      cursor: pointer;
     }
   </style>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -92,6 +96,7 @@
           initialView: 'dayGridMonth',
           dateClick: (info) => {
             const selectedDate = info.date.toISOString().split('T')[0];
+            console.log("Date clicked:", selectedDate);
             const events = schedule.filter(ev => ev.date === selectedDate);
             if (events.length > 0) {
               eventListEl.innerHTML = events.map(ev =>
@@ -104,6 +109,7 @@
         });
 
         calendar.render();
+        console.log("Calendar rendered");
 
         const { data, error } = await supabase
           .from('schedule')

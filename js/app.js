@@ -56,6 +56,32 @@ async function loadSchedule() {
   window._calendar.render();
 }
 
+// Add event listener for date clicks on the calendar
+window._calendar?.on('dateClick', function(info) {
+  const selectedDate = info.dateStr;
+  console.log('Clicked date:', selectedDate);
+  loadEventsForDate(selectedDate);
+});
+
+async function loadEventsForDate(selectedDate) {
+  const list = document.getElementById('event-list');
+  if (!list) return;
+  const { data, error } = await supabase.from('schedule').select('*').eq('user_id', userId);
+  if (error || !data) { list.innerHTML = '<li>Ошибка загрузки</li>'; return; }
+
+  const filtered = data.filter(e => {
+    const eventDate = parseToDate(e.day, e.time).slice(0, 10);
+    return eventDate === selectedDate;
+  });
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<li>Занятий на выбранную дату нет</li>';
+  } else {
+    list.innerHTML = filtered.map(e =>
+      `<li>${e.time} – ${e.subject} (${e.group_name || 'Без группы'})</li>`).join('');
+  }
+}
+
 async function uploadHomework() {
   console.log('Uploading homework');
   const file = document.getElementById('hw-file').files[0];
