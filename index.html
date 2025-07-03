@@ -3,175 +3,301 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Личный кабинет</title>
+  <title>Mentorium — Личный кабинет</title>
+
+  <!-- FullCalendar -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    #calendar {
-      min-height: 400px;
-      z-index: 10;
-      pointer-events: auto;
-      background: white;
-    }
-    .fc-daygrid-day-frame {
-      cursor: pointer;
-    }
-  </style>
+  <!-- Supabase JS -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"></script>
+  <!-- Google API -->
+  <script src="https://apis.google.com/js/api.js"></script>
+  <!-- Telegram WebApp -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <!-- Jitsi -->
+  <script src="https://meet.jit.si/external_api.js"></script>
+
+  <style>
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:sans-serif; background:#121212; color:#fff; }
+    header { background:#1f1f1f; padding:1rem; text-align:center; position:sticky; top:0; z-index:5; }
+    #welcome { font-size:1.2rem; }
+    main { padding:1rem; padding-bottom:4rem; }
+    .tab { display:none; }
+    .tab.active { display:block; }
+    .card { background:#1e1e1e; border-radius:8px; padding:1rem; margin-bottom:1rem; }
+    .card-title { font-weight:bold; margin-bottom:.5rem; }
+    nav.tab-bar {
+      position:fixed; bottom:0; left:0; right:0; height:3.5rem;
+      display:flex; background:#1f1f1f; border-top:1px solid #333;
+    }
+    nav.tab-bar button {
+      flex:1; border:none; background:none; color:#aaa;
+      font-size:.8rem; padding:.5rem 0;
+    }
+    nav.tab-bar button.active { color:#fff; }
+    #calendar { background:#fff; color:#000; border-radius:8px; overflow:hidden; min-height:300px; }
+    .fc-daygrid-day-frame { cursor:pointer; }
+    #events-on-day .card-title { font-size:1rem; }
+    #event-list { list-style:none; margin-top:.5rem; }
+    #event-list li { padding:.5rem 0; border-bottom:1px solid #333; font-size:.9rem; }
+    input, button { font-size:1rem; }
+    button.upload { background:#4caf50; color:#fff; border:none; padding:.5rem 1rem; border-radius:4px; cursor:pointer; }
+    #authorize-btn { background:#4285f4; color:#fff; border:none; padding:.5rem 1rem; border-radius:4px; cursor:pointer; }
+  </style>
 </head>
+
 <body>
   <header>
     <div id="welcome">Привет, <span id="student-name">Студент</span></div>
-    <h2>📅 Расписание</h2>
   </header>
+
   <main>
+    <!-- Вкладка: Ближайшее событие -->
     <section id="tab-next" class="tab active">
       <div class="card">
         <div class="card-title">🚀 Ближайшее занятие</div>
-        <div id="next-event-content">Загрузка…</div>
+        <div id="next-event-content">Пожалуйста, авторизуйтесь</div>
+        <button id="authorize-btn">Авторизоваться в Google</button>
       </div>
     </section>
+
+    <!-- Вкладка: Расписание -->
     <section id="tab-schedule" class="tab">
-      <h2>📅 Расписание</h2>
-      <div id="calendar"></div>
-      <div id="events-on-day" class="card" style="margin-top: 1em;">
-        <div class="card-title">Занятия на выбранную дату</div>
-        <ul id="event-list">Выберите дату</ul>
+      <div class="card">
+        <div class="card-title">📅 Расписание</div>
+        <div id="calendar"></div>
+        <div id="events-on-day" class="card">
+          <div class="card-title">Занятия на выбранную дату</div>
+          <ul id="event-list"><li>Выберите дату</li></ul>
+        </div>
       </div>
     </section>
+
+    <!-- Вкладка: Домашние задания -->
     <section id="tab-homework" class="tab">
-      <h2>📝 Домашние задания</h2>
-      <input type="file" id="hw-file">
-      <button onclick="uploadHomework()">Загрузить ДЗ</button>
-      <div id="hw-status"></div>
-      <h3>Мои файлы</h3>
-      <div id="hw-list" class="card-container">Загрузка…</div>
+      <div class="card">
+        <div class="card-title">📝 Домашние задания</div>
+        <input type="file" id="hw-file">
+        <button class="upload" onclick="uploadHomework()">Загрузить ДЗ</button>
+        <div id="hw-status" style="margin-top:.5rem;"></div>
+        <h3 style="margin-top:1rem;">Мои файлы</h3>
+        <div id="hw-list">Загрузка…</div>
+      </div>
     </section>
+
+    <!-- Вкладка: Видеоматериалы -->
     <section id="tab-video" class="tab">
-      <h2>🎥 Видеоматериалы</h2>
-      <input type="file" id="video-file" accept="video/*">
-      <input type="text" id="video-title" placeholder="Название видео">
-      <button onclick="uploadVideo()">Загрузить видео</button>
-      <div id="video-status"></div>
-      <h3>Список видео</h3>
-      <div id="video-list" class="card-container">Загрузка…</div>
+      <div class="card">
+        <div class="card-title">🎥 Видеоматериалы</div>
+        <input type="file" id="video-file" accept="video/*"><br><br>
+        <input type="text" id="video-title" placeholder="Название видео">
+        <button class="upload" onclick="uploadVideo()">Загрузить видео</button>
+        <div id="video-status" style="margin-top:.5rem;"></div>
+        <h3 style="margin-top:1rem;">Список видео</h3>
+        <div id="video-list">Загрузка…</div>
+      </div>
     </section>
+
+    <!-- Вкладка: Jitsi -->
     <section id="tab-jitsi" class="tab">
-      <h2>🦚 Видеозвонок Jitsi</h2>
-      <div id="jitsi-container"></div>
-      <div id="jitsi-controls" style="margin-top:10px; display: flex; gap: 10px;">
-        <button onclick="jitsiApi.executeCommand('toggleAudio')">🎙 Микрофон</button>
-        <button onclick="jitsiApi.executeCommand('toggleVideo')">📷 Камера</button>
-        <button onclick="jitsiApi.executeCommand('toggleChat')">💬 Чат</button>
-        <button onclick="jitsiApi.executeCommand('toggleShareScreen')">🖥 Экран</button>
-        <button onclick="alertParticipants()">👥 Участники</button>
-        <button onclick="toggleWhiteboard()">📋 Whiteboard</button>
+      <div class="card">
+        <div class="card-title">🦚 Видеозвонок Jitsi</div>
+        <div id="jitsi-container" style="height:300px;"></div>
+        <div style="margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+          <button onclick="jitsiApi.executeCommand('toggleAudio')">🎙 Микрофон</button>
+          <button onclick="jitsiApi.executeCommand('toggleVideo')">📷 Камера</button>
+          <button onclick="jitsiApi.executeCommand('toggleChat')">💬 Чат</button>
+          <button onclick="jitsiApi.executeCommand('toggleShareScreen')">🖥 Экран</button>
+          <button onclick="alertParticipants()">👥 Участники</button>
+          <button onclick="toggleWhiteboard()">📋 Whiteboard</button>
+        </div>
       </div>
     </section>
   </main>
+
   <nav class="tab-bar">
-    <button id="btn-next">🔥<br>Событие</button>
+    <button id="btn-next" class="active">🔥<br>Событие</button>
     <button id="btn-schedule">📅<br>Расписание</button>
     <button id="btn-homework">📝<br>Домашка</button>
     <button id="btn-video">🎥<br>Видео</button>
     <button id="btn-jitsi">🦚<br>Jitsi</button>
-
   </nav>
-  <script type="module" src="js/app.js"></script>
-  <script src="https://meet.jit.si/external_api.js"></script>
+
   <script type="module">
-    import { supabase } from './js/supabaseClient.js';
+  // ================== TELEGRAM init ===================
+  Telegram.WebApp.ready();
+  const tgUser = Telegram.WebApp.initDataUnsafe.user || {};
+  document.getElementById('student-name').textContent = tgUser.first_name || 'Студент';
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      const user = Telegram.WebApp.initDataUnsafe.user;
+  // ================== GOOGLE CALENDAR ===================
+  const CLIENT_ID     = '156070127304-l8lqdcetr3rqdln2sfm59a1iu8is421l.apps.googleusercontent.com';
+  const API_KEY       = 'AIzaSyALADqAQwTUzs1pLyI_ORMI8SULs5T0HN8';
+  const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+  const SCOPES        = 'https://www.googleapis.com/auth/calendar.readonly';
 
-      const calendarEl = document.getElementById('calendar');
-      const eventListEl = document.getElementById('event-list');
+  let events = [], calendar = null;
+  const authorizeBtn = document.getElementById('authorize-btn');
+  const nextContent  = document.getElementById('next-event-content');
+  const calendarEl   = document.getElementById('calendar');
+  const eventListEl  = document.getElementById('event-list');
 
-      let schedule = [];
-
-      if (calendarEl) {
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          dateClick: (info) => {
-            const selectedDate = info.date.toISOString().split('T')[0];
-            console.log("Date clicked:", selectedDate);
-            const events = schedule.filter(ev => ev.date === selectedDate);
-            if (events.length > 0) {
-              eventListEl.innerHTML = events.map(ev =>
-                `<li>${ev.time_from}–${ev.time_to} ${ev.subject} (${ev.group_name})</li>`
-              ).join('');
-            } else {
-              eventListEl.innerHTML = '<li>Нет занятий на выбранную дату</li>';
-            }
-          }
-        });
-
-        calendar.render();
-        console.log("Calendar rendered");
-
-        const { data, error } = await supabase
-          .from('schedule')
-          .select('*')
-          .eq('user_id', user.id);
-
-        if (data && !error) {
-          schedule = data;
-          const events = data.map(ev => ({
-            title: ev.subject,
-            start: ev.date
-          }));
-          calendar.addEventSource(events);
-        }
+  function handleClientLoad() {
+    gapi.load('client:auth2', initClient);
+  }
+  async function initClient() {
+    await gapi.client.init({
+      apiKey: API_KEY,
+      clientId: CLIENT_ID,
+      discoveryDocs: [DISCOVERY_DOC],
+      scope: SCOPES
+    });
+    gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+    updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+    authorizeBtn.onclick = () => gapi.auth2.getAuthInstance().signIn();
+  }
+  function updateSigninStatus(signedIn) {
+    if (signedIn) {
+      authorizeBtn.style.display = 'none';
+      loadEvents();
+    } else {
+      authorizeBtn.style.display = 'inline-block';
+      nextContent.textContent = 'Пожалуйста, авторизуйтесь';
+    }
+  }
+  async function loadEvents() {
+    const resp = await gapi.client.calendar.events.list({
+      calendarId: 'primary',
+      timeMin: new Date().toISOString(),
+      showDeleted: false,
+      singleEvents: true,
+      orderBy: 'startTime',
+      maxResults: 50
+    });
+    events = resp.result.items.map(ev=>({
+      title: ev.summary||'(без названия)',
+      start: ev.start.dateTime||ev.start.date,
+      end:   ev.end.dateTime  ||ev.end.date
+    }));
+    renderNextEvent();
+    renderCalendar();
+  }
+  function renderNextEvent() {
+    if(!events.length){
+      nextContent.textContent='Нет предстоящих событий';
+      return;
+    }
+    const nxt=new Date(events[0].start);
+    nextContent.innerHTML=`<strong>${events[0].title}</strong><br>
+      ${nxt.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})}
+      ${nxt.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
+  }
+  function renderCalendar(){
+    if(calendar) calendar.destroy();
+    calendar=new FullCalendar.Calendar(calendarEl,{
+      initialView:'dayGridMonth',
+      locale:'ru',
+      events,
+      dateClick:info=>{
+        const day=info.dateStr;
+        const list=events.filter(e=>e.start.startsWith(day));
+        eventListEl.innerHTML=list.length
+          ? list.map(e=>`<li>${e.start.slice(11,16)}–${e.end.slice(11,16)} ${e.title}</li>`).join('')
+          : '<li>Нет занятий на выбранную дату</li>';
       }
     });
-  </script>
-  <script>
-    let jitsiApi = null;
-    document.getElementById('btn-jitsi').addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.getElementById('tab-jitsi').classList.add('active');
+    calendar.render();
+  }
+  handleClientLoad();
 
-      if (!jitsiApi) {
-        jitsiApi = new JitsiMeetExternalAPI('meet.jit.si', {
-          roomName: 'MentoriumRoom123',
-          parentNode: document.getElementById('jitsi-container'),
-          width: '100%',
-          height: 400,
-          configOverwrite: {},
-          interfaceConfigOverwrite: {
-            TOOLBAR_BUTTONS: []
-          }
-        });
-        jitsiApi.addEventListener('videoConferenceJoined', () => {
-          console.log('Вошли в конференцию!');
-        });
-      }
+  // ================== SUPABASE STORAGE ===================
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  const supabase = createClient(
+    'https://lwmervaxwrllgykcjfpn.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3bWVydmF4d3JsbGd5a2NqZnBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0NDk3NjksImV4cCI6MjA2NjAyNTc2OX0.x8Ri1xtidyNqJDl4QgeSzTP2d0FaHLFPV7vBIIytLp4'
+  );
+
+  // Домашки
+  async function uploadHomework(){
+    const f=document.getElementById('hw-file').files[0];
+    const st=document.getElementById('hw-status');
+    if(!f){ st.textContent='Файл не выбран'; return; }
+    const path=`${tgUser.id}/${Date.now()}_${f.name}`;
+    const {error}=await supabase.storage.from('homework').upload(path,f);
+    st.textContent= error? '❌ '+error.message : '✅ Загружено';
+    listHomework();
+  }
+  async function listHomework(){
+    const list=document.getElementById('hw-list');
+    const {data,error}=await supabase.storage.from('homework').list(tgUser.id+'/');
+    if(error||!data){ list.textContent='Ошибка'; return; }
+    list.innerHTML='';
+    data.forEach(f=>{
+      const url=supabase.storage.from('homework').getPublicUrl(tgUser.id+'/'+f.name).data.publicUrl;
+      const card=document.createElement('div'); card.className='card';
+      card.innerHTML=`<div class="card-title">📄 ${f.name}</div>
+        <a href="${url}" target="_blank">Открыть</a>`;
+      list.appendChild(card);
     });
+  }
+  // Видео
+  async function uploadVideo(){
+    const f=document.getElementById('video-file').files[0];
+    const t=document.getElementById('video-title').value.trim();
+    const st=document.getElementById('video-status');
+    if(!f||!t){ st.textContent='Выберите файл и введите название'; return; }
+    const path=`${tgUser.id}/${Date.now()}_${f.name}`;
+    let {error}=await supabase.storage.from('videos').upload(path,f);
+    if(error){ st.textContent='❌ '+error.message; return; }
+    const {error:e2}=await supabase.from('videos').insert([{file_path:path,title:t}]);
+    st.textContent=e2? '❌ '+e2.message : '✅ Видео загружено';
+    loadVideos();
+  }
+  async function loadVideos(){
+    const list=document.getElementById('video-list');
+    const {data,error}=await supabase.from('videos').select('*').order('uploaded_at',{ascending:false});
+    if(error||!data){ list.textContent='Ошибка'; return; }
+    list.innerHTML='';
+    data.forEach(item=>{
+      const url=supabase.storage.from('videos').getPublicUrl(item.file_path).data.publicUrl;
+      const card=document.createElement('div'); card.className='card';
+      card.innerHTML=`<div class="card-title">🎬 ${item.title}</div>
+        <video controls src="${url}" style="width:100%;border-radius:6px"></video>`;
+      list.appendChild(card);
+    });
+  }
 
-    // Add tab switching for other buttons too
-    ['btn-next', 'btn-schedule', 'btn-homework', 'btn-video'].forEach(id => {
-      document.getElementById(id).addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.getElementById('tab-' + id.split('-')[1]).classList.add('active');
+  // ================== JITSI EMBED ===================
+  let jitsiApi = null;
+  document.getElementById('btn-jitsi').onclick = () => {
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById('tab-jitsi').classList.add('active');
+    if(!jitsiApi){
+      jitsiApi = new JitsiMeetExternalAPI('meet.jit.si',{
+        roomName: 'MentoriumRoom123',
+        parentNode: document.getElementById('jitsi-container'),
+        width:'100%', height:300
       });
-    });
-
-    function alertParticipants() {
-      if (jitsiApi) {
-        jitsiApi.getParticipantsInfo().then(participants => {
-          const names = participants.map(p => p.displayName).join("\n");
-          alert("Участники:\n" + names);
-        });
-      }
+      jitsiApi.addEventListener('videoConferenceJoined', ()=>console.log('Вошли в конференц!'));
     }
+  };
+  function alertParticipants(){
+    jitsiApi.getParticipantsInfo().then(p=>alert('Участники:\n'+p.map(x=>x.displayName).join('\n')));
+  }
+  function toggleWhiteboard(){ jitsiApi.executeCommand('toggleWhiteboard'); }
 
-    function toggleWhiteboard() {
-      if (jitsiApi) {
-        jitsiApi.executeCommand('toggleWhiteboard');
-      }
-    }
+  // ================== TAB SWITCH ===================
+  function openTab(id){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById('tab-'+id).classList.add('active');
+    document.querySelectorAll('nav.tab-bar button').forEach(b=>b.classList.remove('active'));
+    document.getElementById('btn-'+id).classList.add('active');
+    if(id==='homework') listHomework();
+    if(id==='video') loadVideos();
+  }
+  document.getElementById('btn-next'    ).onclick = ()=>openTab('next');
+  document.getElementById('btn-schedule').onclick = ()=>openTab('schedule');
+  document.getElementById('btn-homework').onclick = ()=>openTab('homework');
+  document.getElementById('btn-video'   ).onclick = ()=>openTab('video');
   </script>
 </body>
 </html>
