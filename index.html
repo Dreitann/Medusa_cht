@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mentorium — Личный кабинет</title>
 
-  <!-- Стили и FullCalendar -->
+  <!-- Стили и FullCalendar CSS -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
@@ -13,23 +13,27 @@
     header { background:#1f1f1f; padding:1rem; text-align:center; position:sticky; top:0; }
     #calendar { background:#fff; color:#000; border-radius:8px; min-height:300px; }
     .fc-daygrid-day-frame { cursor:pointer; }
-    nav.tab-bar { position:fixed; bottom:0; left:0; right:0; display:flex; background:#1f1f1f; }
-    nav.tab-bar button { flex:1; padding:.5rem 0; border:none; background:none; color:#aaa; }
-    nav.tab-bar button.active { color:#fff; }
     .tab { display:none; padding:1rem; padding-bottom:4rem; }
     .tab.active { display:block; }
+    nav.tab-bar { position:fixed; bottom:0; left:0; right:0; display:flex; background:#1f1f1f; }
+    nav.tab-bar button { flex:1; padding:.5rem 0; border:none; background:none; color:#aaa; font-size:.9rem; }
+    nav.tab-bar button.active { color:#fff; }
     .card { background:#1e1e1e; border-radius:8px; padding:1rem; margin-bottom:1rem; }
     .card-title { font-weight:bold; margin-bottom:.5rem; }
     button.upload, #authorize-button { background:#4285f4; color:#fff; border:none; padding:.5rem 1rem; border-radius:4px; cursor:pointer; }
   </style>
 
-  <!-- Библиотеки -->
+  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- FullCalendar JS -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <!-- Ваш скрипт с handleClientLoad -->
+  <script src="js/googleCalendar.js"></script>
+  <!-- Google API (вызывает handleClientLoad при загрузке) -->
   <script src="https://apis.google.com/js/api.js" onload="handleClientLoad()"></script>
+  <!-- Jitsi External API -->
   <script src="https://meet.jit.si/external_api.js"></script>
 </head>
-
 <body>
   <header>
     Привет, <span id="student-name">Студент</span>
@@ -41,7 +45,7 @@
       <div class="card">
         <div class="card-title">🚀 Ближайшее событие</div>
         <div id="next-event-content">Пожалуйста, авторизуйтесь</div>
-        <button id="authorize-button">Авторизоваться в Google Calendar</button>
+        <button id="authorize-button" class="upload">Авторизоваться в Google Calendar</button>
       </div>
     </section>
 
@@ -106,9 +110,8 @@
     <button id="btn-jitsi">🦚</button>
   </nav>
 
-  <!-- Модули -->
+  <!-- Supabase-клиент и основная логика -->
   <script type="module" src="js/supabaseClient.js"></script>
-  <script type="module" src="js/googleCalendar.js"></script>
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
