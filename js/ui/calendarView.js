@@ -1,38 +1,44 @@
-import { listUpcomingEvents, getState } from '../services/googleCalendar.js';
+import { $, setHTML } from '../utils/dom.js';
+import { toISODate } from '../utils/date.js';
+import * as gcal from '../services/googleCalendar.js';
+import { openMeeting } from '../services/meetings.js';
 
-let fc;
+let calendar;
 
-export async function renderCalendar(containerEl, listEl) {
-  if (!getState().items.length) await listUpcomingEvents();
+export async function renderCalendar(){
+  const host = $('#calendar');
+  const list = $('#event-list');
+  if (!host) return;
 
-  const events = getState().items.map(e => ({
+  // Загружаем события
+  if (!gcal.isAuthorized()) {
+    setHTML(list,'<li>Авторизуйтесь в Google</li>');
+    return;
+  }
+  await gcal.refreshEvents();
+  const events = gcal.getAllEvents().map(e=>({
     title: e.title,
-    start: e.startISO,
-    extendedProps: { meet: e.meet },
+    start: e.start,
+    extendedProps: { link: e.link }
   }));
 
-  if (fc) fc.destroy();
-  fc = new FullCalendar.Calendar(containerEl, {
-    initialView: 'dayGridMonth',
-    locale: 'ru',
+  if (calendar) calendar.destroy();
+  calendar = new FullCalendar.Calendar(host, {
+    initialView:'dayGridMonth',
+    locale:'ru',
     events,
     eventClick: info => {
-      const link = info.event.extendedProps.meet;
-      if (link) window.open(link, '_blank');
+      const link = info.event.extendedProps.link;
+      if (link) openMeeting(link);
     },
     dateClick: info => {
-      const y = info.date.getFullYear();
-      const m = String(info.date.getMonth() + 1).padStart(2, '0');
-      const d = String(info.date.getDate()).padStart(2, '0');
-      const dayStr = `${y}-${m}-${d}`;
-      const filtered = getState().items.filter(e => (e.startISO || '').startsWith(dayStr));
-      listEl.innerHTML = filtered.length
-        ? filtered.map(e => {
-            const t = (e.startISO||'').includes('T') ? e.startISO.slice(11,16) : 'весь день';
-            return `<li>${t} — ${e.title}</li>`;
-          }).join('')
-        : '<li>Нет событий на эту дату</li>';
-    },
+      const day = info.dateStr;
+      const items = gcal.getEventsForDay(day);
+      setHTML(list, items.length
+        ? items.map(it=>`<li>${it.start.slice(11,16)} — ${it.title}</li>`).join('')
+        : '<li>Нет событий на эту дату</li>');
+    }
   });
-  fc.render();
+  host.innerHTML = '';
+  calendar.render();
 }

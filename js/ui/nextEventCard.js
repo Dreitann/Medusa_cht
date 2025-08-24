@@ -1,14 +1,28 @@
-import { listUpcomingEvents, getState } from '../services/googleCalendar.js';
+import { $, setHTML } from '../utils/dom.js';
+import { fmtDateTimeRu } from '../utils/date.js';
+import * as gcal from '../services/googleCalendar.js';
 
-export async function renderNextEvent(dst) {
-  if (!getState().items.length) await listUpcomingEvents();
-  const now = Date.now();
-  const future = getState().items
-    .map(e => ({ ...e, ts: Date.parse(e.startISO) }))
-    .filter(e => e.ts >= now)
-    .sort((a, b) => a.ts - b.ts);
-  if (!future.length) { dst.textContent = 'Нет предстоящих событий'; return; }
-  const ev = future[0];
-  const d = new Date(ev.startISO);
-  dst.innerHTML = `<b>${ev.title}</b><br>${d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'})} ${d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
+export function bindGoogleAuthButton(){
+  const btn = $('#google-auth-btn');
+  if (!btn) return;
+
+  gcal.onSigninChange(async (signed)=>{
+    btn.style.display = signed ? 'none' : 'inline-block';
+    if (signed) await renderNext();
+  });
+
+  btn.addEventListener('click', ()=> gcal.signIn());
+}
+
+export async function renderNext(){
+  const dst = $('#next-event-content');
+  if (!gcal.isAuthorized()) {
+    setHTML(dst, 'Требуется авторизация Google');
+    return;
+  }
+  await gcal.refreshEvents();
+  const ev = gcal.getNextEvent();
+  if (!ev) return setHTML(dst,'Нет предстоящих событий');
+
+  setHTML(dst, `<b>${ev.title}</b><br>${fmtDateTimeRu(ev.start)}`);
 }

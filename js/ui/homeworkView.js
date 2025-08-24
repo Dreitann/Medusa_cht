@@ -1,29 +1,33 @@
-import { uploadHomework, listHomework } from '../services/supabase.js';
+import { $, setHTML, setText } from '../utils/dom.js';
+import { supabase, uploadHomework, listHomework } from '../services/supabase.js';
 
-export function attachHomeworkUI(userId) {
-  const file = document.getElementById('hw-file');
-  const status = document.getElementById('hw-status');
-  const list = document.getElementById('hw-list');
+export function initHomeworkUI(getUserId){
+  $('#hw-upload-btn')?.addEventListener('click', async ()=>{
+    const file = $('#hw-file').files[0];
+    const status = $('#hw-status');
 
-  document.getElementById('hw-upload-btn')?.addEventListener('click', async () => {
-    if (!file.files[0]) { status.textContent = 'Файл не выбран'; return; }
-    try {
-      await uploadHomework(userId, file.files[0]);
-      status.textContent = '✅ Загружено';
-      await refresh();
-    } catch (e) { status.textContent = '❌ ' + e.message; }
+    if (!file) return setText(status,'Файл не выбран');
+
+    try{
+      await uploadHomework(getUserId(), file);
+      setText(status,'✅ Загружено');
+      await renderHomework(getUserId());
+    }catch(e){
+      setText(status,'❌ '+e.message);
+    }
   });
+}
 
-  async function refresh() {
-    try {
-      const items = await listHomework(userId);
-      list.innerHTML = items.map(it => `
-        <div class="card">
-          <div class="card-title">📄 ${it.name}</div>
-          <a href="${it.url}" target="_blank">Открыть</a>
-        </div>
-      `).join('');
-    } catch (e) { list.textContent = 'Ошибка: ' + e.message; }
+export async function renderHomework(userId){
+  const listEl = $('#hw-list');
+  try{
+    const list = await listHomework(userId);
+    if (!list.length) return setHTML(listEl,'<div class="muted">Файлов нет</div>');
+    setHTML(listEl, list.map(f=>(
+      `<div class="card"><div class="card-title">📄 ${f.name}</div>
+        <a href="${f.url}" target="_blank">Открыть</a></div>`
+    )).join(''));
+  }catch(e){
+    setHTML(listEl,'<div class="card">Ошибка</div>');
   }
-  refresh();
 }

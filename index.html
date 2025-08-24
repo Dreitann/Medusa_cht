@@ -1,41 +1,27 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mentorium — Личный кабинет</title>
 
-  <!-- Стили и FullCalendar CSS -->
+  <!-- FullCalendar -->
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    body { margin:0; font-family:sans-serif; background:#121212; color:#fff; }
-    header { background:#1f1f1f; padding:1rem; text-align:center; position:sticky; top:0; }
-    #calendar { background:#fff; color:#000; border-radius:8px; min-height:300px; }
-    .fc-daygrid-day-frame { cursor:pointer; }
-    .tab { display:none; padding:1rem; padding-bottom:4rem; }
-    .tab.active { display:block; }
-    nav.tab-bar { position:fixed; bottom:0; left:0; right:0; display:flex; background:#1f1f1f; }
-    nav.tab-bar button { flex:1; padding:.5rem 0; border:none; background:none; color:#aaa; font-size:.9rem; }
-    nav.tab-bar button.active { color:#fff; }
-    .card { background:#1e1e1e; border-radius:8px; padding:1rem; margin-bottom:1rem; }
-    .card-title { font-weight:bold; margin-bottom:.5rem; }
-    button.upload, #authorize-button { background:#4285f4; color:#fff; border:none; padding:.5rem 1rem; border-radius:4px; cursor:pointer; }
-  </style>
-
-  <!-- Telegram WebApp SDK -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <!-- FullCalendar JS -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-  <!-- Ваш скрипт с handleClientLoad -->
-  <script src="js/googleCalendar.js"></script>
-  <!-- Google API (вызывает handleClientLoad при загрузке) -->
-  <script src="https://apis.google.com/js/api.js" onload="handleClientLoad()"></script>
-  <!-- Jitsi External API -->
+
+  <!-- Telegram -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- Google API (onload -> handleClientLoad из services/googleCalendar.js) -->
+  <script src="https://apis.google.com/js/api.js" async defer onload="handleClientLoad()"></script>
+
+  <!-- Jitsi -->
   <script src="https://meet.jit.si/external_api.js"></script>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
+  <header class="topbar">
     Привет, <span id="student-name">Студент</span>
   </header>
 
@@ -44,16 +30,17 @@
     <section id="tab-next" class="tab active">
       <div class="card">
         <div class="card-title">🚀 Ближайшее событие</div>
-        <div id="next-event-content">Пожалуйста, авторизуйтесь</div>
-        <button id="authorize-button" class="upload">Авторизоваться в Google Calendar</button>
+        <div id="next-event-content">Требуется авторизация Google</div>
+        <button id="google-auth-btn" class="btn">Войти в Google</button>
       </div>
     </section>
 
-    <!-- 📅 Google Calendar -->
+    <!-- 📅 Календарь -->
     <section id="tab-schedule" class="tab">
       <div class="card">
         <div class="card-title">📅 Расписание</div>
         <div id="calendar"></div>
+
         <div class="card" style="margin-top:1rem;">
           <div class="card-title">События на дату</div>
           <ul id="event-list"><li>Выберите дату</li></ul>
@@ -61,26 +48,28 @@
       </div>
     </section>
 
-    <!-- 📝 Домашние задания (Supabase) -->
+    <!-- 📝 Домашка -->
     <section id="tab-homework" class="tab">
       <div class="card">
         <div class="card-title">📝 Домашние задания</div>
         <input type="file" id="hw-file">
-        <button class="upload" onclick="uploadHomework()">Загрузить ДЗ</button>
-        <div id="hw-status" style="margin-top:.5rem;"></div>
+        <button id="hw-upload-btn" class="btn">Загрузить ДЗ</button>
+        <div id="hw-status" class="muted" style="margin-top:.5rem;"></div>
+
         <h3 style="margin-top:1rem;">Мои файлы</h3>
         <div id="hw-list">Загрузка…</div>
       </div>
     </section>
 
-    <!-- 🎥 Видеоматериалы (Supabase) -->
+    <!-- 🎥 Видео -->
     <section id="tab-video" class="tab">
       <div class="card">
         <div class="card-title">🎥 Видеоматериалы</div>
-        <input type="file" id="video-file" accept="video/*"><br><br>
+        <input type="file" id="video-file" accept="video/*">
         <input type="text" id="video-title" placeholder="Название">
-        <button class="upload" onclick="uploadVideo()">Загрузить видео</button>
-        <div id="video-status" style="margin-top:.5rem;"></div>
+        <button id="video-upload-btn" class="btn">Загрузить видео</button>
+        <div id="video-status" class="muted" style="margin-top:.5rem;"></div>
+
         <h3 style="margin-top:1rem;">Список видео</h3>
         <div id="video-list">Загрузка…</div>
       </div>
@@ -90,28 +79,44 @@
     <section id="tab-jitsi" class="tab">
       <div class="card">
         <div class="card-title">💻 Видеозвонок Jitsi</div>
-        <div id="jitsi-container" style="height:300px;"></div>
-        <div style="margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap;">
-          <button onclick="jitsiApi.executeCommand('toggleAudio')">🎙</button>
-          <button onclick="jitsiApi.executeCommand('toggleVideo')">📷</button>
-          <button onclick="jitsiApi.executeCommand('toggleChat')">💬</button>
-          <button onclick="jitsiApi.executeCommand('toggleShareScreen')">🖥</button>
-          <button onclick="alertParticipants()">👥</button>
+        <div id="jitsi-container" style="height:340px;"></div>
+        <div class="button-row">
+          <button class="btn" onclick="window.jitsiApi?.executeCommand('toggleAudio')">🎙</button>
+          <button class="btn" onclick="window.jitsiApi?.executeCommand('toggleVideo')">📷</button>
+          <button class="btn" onclick="window.jitsiApi?.executeCommand('toggleChat')">💬</button>
+          <button class="btn" onclick="window.jitsiApi?.executeCommand('toggleShareScreen')">🖥</button>
+          <button class="btn" id="jitsi-participants-btn">👥</button>
         </div>
       </div>
     </section>
   </main>
 
+  <!-- Навигация -->
   <nav class="tab-bar">
-    <button id="btn-next"     class="active">🔥</button>
-    <button id="btn-schedule">📅</button>
-    <button id="btn-homework">📝</button>
-    <button id="btn-video">🎥</button>
-    <button id="btn-jitsi">🦚</button>
+    <button id="btn-next" class="active">🔥<br>Событие</button>
+    <button id="btn-schedule">📅<br>Расписание</button>
+    <button id="btn-homework">📝<br>Домашка</button>
+    <button id="btn-video">🎥<br>Видео</button>
+    <button id="btn-jitsi">🦚<br>Jitsi</button>
   </nav>
 
-  <!-- Supabase-клиент и основная логика -->
-  <script type="module" src="js/supabaseClient.js"></script>
-  <script type="module" src="js/app.js"></script>
+  <!-- Инициализация (порядок важен) -->
+  <script type="module" src="js/utils/date.js"></script>
+  <script type="module" src="js/utils/dom.js"></script>
+
+  <script type="module" src="js/config.js"></script>
+
+  <script type="module" src="js/services/supabase.js"></script>
+  <script type="module" src="js/services/googleCalendar.js"></script>
+  <script type="module" src="js/services/meetings.js"></script>
+
+  <script type="module" src="js/ui/tabs.js"></script>
+  <script type="module" src="js/ui/nextEventCard.js"></script>
+  <script type="module" src="js/ui/calendarView.js"></script>
+  <script type="module" src="js/ui/homeworkView.js"></script>
+  <script type="module" src="js/ui/videoView.js"></script>
+  <script type="module" src="js/ui/jitsiView.js"></script>
+
+  <script type="module" src="js/main.js?v=2025-08-24"></script>
 </body>
 </html>
