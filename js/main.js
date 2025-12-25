@@ -6,6 +6,8 @@ import { initHomeworkUI, renderHomework } from './ui/homeworkView.js';
 import { initVideoUI, renderVideos } from './ui/videoView.js';
 import { initJitsi } from './ui/jitsiView.js';
 import { fetchSchedule, ensureUser } from './services/supabase.js';
+import { setStatus } from './ui/status.js';
+import { showToast } from './ui/toast.js';
 import * as gcal from './services/googleCalendar.js';
 
 Telegram.WebApp.ready();
@@ -17,22 +19,20 @@ setText(document.getElementById('student-id'), tgUser.id ? String(tgUser.id) : '
 let scheduleRows = [];
 let scheduleError = null;
 
-function setConnStatus(ok, text){
-  const chip = $('#conn-chip');
-  if (!chip) return;
-  chip.textContent = text;
-  chip.classList.toggle('success', ok);
-  chip.classList.toggle('error', !ok);
-}
+setStatus('supabase', { state:'idle', text:'Ожидание' });
+setStatus('google', { state:'warn', text:'Войти' });
+setStatus('jitsi', { state:'idle', text:'Готов' });
 
 async function refreshSchedule(){
   try{
+    setStatus('supabase', { state:'warn', text:'Проверяем' });
     scheduleRows = await fetchSchedule(userId);
     scheduleError = null;
-    setConnStatus(true, 'Supabase готов');
+    setStatus('supabase', { state:'ok', text:'Готов' });
   }catch(e){
     scheduleError = e;
-    setConnStatus(false, 'Supabase недоступен');
+    setStatus('supabase', { state:'error', text:'Ошибка' });
+    showToast('Supabase недоступен: '+e.message, 'error');
   }
 }
 
@@ -43,10 +43,16 @@ initHomeworkUI(()=>userId);
 initVideoUI(()=>userId);
 
 async function boot(){
+  if (!window.__ENV__?.SUPABASE_URL || !window.__ENV__?.SUPABASE_KEY){
+    showToast('Заполните SUPABASE_URL и SUPABASE_KEY в env.js', 'error', 5000);
+    setStatus('supabase',{state:'error', text:'Конфиг'});
+  }
+
   try{
     await ensureUser({ id:userId, first_name: tgUser.first_name || 'Студент' });
   }catch(e){
     console.warn('Не удалось создать пользователя', e);
+    showToast('Не удалось синхронизировать пользователя', 'warn');
   }
 
   await refreshSchedule();
@@ -62,12 +68,18 @@ boot();
 
 // Реагируем на готовность/авторизацию Google
 gcal.onGoogleReady(async ()=>{
+  setStatus('google', gcal.isAuthorized()
+    ? { state:'ok', text:'Подключён' }
+    : { state:'warn', text:'Войти' });
   if (gcal.isAuthorized()){
     await renderNext({ scheduleRows });
     await renderCalendar({ scheduleRows, error:scheduleError });
   }
 });
 gcal.onSigninChange(async signed=>{
+  setStatus('google', signed
+    ? { state:'ok', text:'Подключён' }
+    : { state:'warn', text:'Войти' });
   if (signed){
     await renderNext({ scheduleRows });
     await renderCalendar({ scheduleRows, error:scheduleError });

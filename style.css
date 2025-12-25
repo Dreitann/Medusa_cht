@@ -31,9 +31,13 @@ body{
 .topbar-content{display:flex;align-items:center;justify-content:space-between;gap:14px;}
 .eyebrow{text-transform:uppercase;letter-spacing:0.08em;font-size:12px;color:var(--muted);}
 .hello{font-size:20px;font-weight:700;}
-.chip{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid var(--border);color:var(--muted);}
-.chip.success{background:rgba(74,222,128,0.12);color:#bbf7d0;border-color:rgba(74,222,128,0.4);}
-.chip.error{background:rgba(248,113,113,0.12);color:#fecdd3;border-color:rgba(248,113,113,0.4);}
+.status-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+.chip{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid var(--border);color:var(--muted);display:inline-flex;align-items:center;gap:6px;}
+.status-chip .label{opacity:0.7;}
+.status-idle{background:rgba(255,255,255,0.05);color:var(--muted);}
+.status-ok{background:rgba(74,222,128,0.12);color:#bbf7d0;border-color:rgba(74,222,128,0.4);}
+.status-warn{background:rgba(253,224,71,0.12);color:#fef9c3;border-color:rgba(253,224,71,0.4);}
+.status-error{background:rgba(248,113,113,0.12);color:#fecdd3;border-color:rgba(248,113,113,0.4);}
 
 .card{
   background:var(--card);
@@ -159,5 +163,33 @@ input::file-selector-button{
   padding:8px 12px;
   cursor:pointer;
 }
+
+#toast-container{
+  position:fixed;
+  right:14px;
+  bottom:80px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  z-index:9999;
+}
+.toast{
+  min-width:240px;
+  max-width:360px;
+  background:rgba(0,0,0,0.75);
+  border:1px solid var(--border);
+  color:var(--fg);
+  padding:12px 14px;
+  border-radius:12px;
+  box-shadow:0 14px 32px rgba(0,0,0,0.4);
+  opacity:0;
+  transform:translateY(6px);
+  transition:opacity .2s ease, transform .2s ease;
+  font-weight:700;
+}
+.toast.visible{opacity:1;transform:translateY(0);}
+.toast-info{border-color:rgba(125,211,252,0.5);}
+.toast-warn{border-color:rgba(253,224,71,0.6);}
+.toast-error{border-color:rgba(248,113,113,0.6);}
 
 @keyframes fade{from{opacity:.7;transform:translateY(4px);}to{opacity:1;transform:none;}}

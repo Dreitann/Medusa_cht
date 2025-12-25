@@ -1,5 +1,6 @@
 import { $, setHTML, setText } from '../utils/dom.js';
-import { supabase, uploadHomework, listHomework } from '../services/supabase.js';
+import { uploadHomework, listHomework } from '../services/supabase.js';
+import { showToast } from './toast.js';
 
 export function initHomeworkUI(getUserId){
   const btn = $('#hw-upload-btn');
@@ -14,10 +15,12 @@ export function initHomeworkUI(getUserId){
     try{
       await uploadHomework(getUserId(), file);
       setText(status,'✅ Загружено');
+      showToast('ДЗ загружено', 'info');
       $('#hw-file').value = '';
       await renderHomework(getUserId());
     }catch(e){
       setText(status,'❌ '+e.message);
+      showToast('Ошибка загрузки ДЗ: '+e.message, 'error');
     }finally{
       btn.disabled = false;
     }
@@ -37,5 +40,6 @@ export async function renderHomework(userId){
     )).join(''));
   }catch(e){
     setHTML(listEl,`<div class="card">Ошибка: ${e.message}</div>`);
+    showToast('Не удалось получить список ДЗ: '+e.message, 'error');
   }
 }

@@ -1,5 +1,6 @@
 import { $, setHTML, setText } from '../utils/dom.js';
 import { uploadVideo, listVideos } from '../services/supabase.js';
+import { showToast } from './toast.js';
 
 export function initVideoUI(getUserId){
   const btn = $('#video-upload-btn');
@@ -15,11 +16,13 @@ export function initVideoUI(getUserId){
     try{
       await uploadVideo(getUserId(), file, title);
       setText(status,'✅ Видео загружено');
+      showToast('Видео загружено', 'info');
       $('#video-title').value = '';
       $('#video-file').value = '';
       await renderVideos();
     }catch(e){
       setText(status,'❌ '+e.message);
+      showToast('Ошибка загрузки видео: '+e.message, 'error');
     }finally{
       btn.disabled = false;
     }
@@ -39,5 +42,6 @@ export async function renderVideos(){
     )).join(''));
   }catch(e){
     setHTML(host,`<div class="card">Ошибка: ${e.message}</div>`);
+    showToast('Не удалось загрузить список видео: '+e.message, 'error');
   }
 }

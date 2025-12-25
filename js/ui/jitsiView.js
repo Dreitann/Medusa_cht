@@ -1,4 +1,5 @@
 import { $ } from '../utils/dom.js';
+import { setStatus } from './status.js';
 import { JITSI_DOMAIN, JITSI_ROOM } from '../config.js';
 
 export function initJitsi(){
@@ -9,7 +10,10 @@ export function initJitsi(){
         parentNode: document.getElementById('jitsi-container'),
         width:'100%', height:340
       });
-      window.jitsiApi.addEventListener('videoConferenceJoined', ()=>console.log('Jitsi joined'));
+      window.jitsiApi.addEventListener('videoConferenceJoined', ()=>{
+        setStatus('jitsi', { state:'ok', text:'Онлайн' });
+      });
+      setStatus('jitsi', { state:'warn', text:'Подключаемся' });
     }
   });
 

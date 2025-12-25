@@ -34,7 +34,11 @@
         <div class="hello">Привет, <span id="student-name">Студент</span></div>
         <div class="muted small">ID: <span id="student-id">—</span></div>
       </div>
-      <div class="chip success" id="conn-chip">Supabase готов</div>
+      <div class="status-chips">
+        <div class="chip status-chip status-idle" data-status-id="supabase"><span class="label">Supabase</span><span class="status-text">—</span></div>
+        <div class="chip status-chip status-idle" data-status-id="google"><span class="label">Google</span><span class="status-text">—</span></div>
+        <div class="chip status-chip status-idle" data-status-id="jitsi"><span class="label">Jitsi</span><span class="status-text">Готов</span></div>
+      </div>
     </div>
   </header>
 
@@ -141,7 +145,11 @@
   <script type="module" src="js/ui/homeworkView.js"></script>
   <script type="module" src="js/ui/videoView.js"></script>
   <script type="module" src="js/ui/jitsiView.js"></script>
+  <script type="module" src="js/ui/toast.js"></script>
+  <script type="module" src="js/ui/status.js"></script>
 
   <script type="module" src="js/main.js?v=2025-08-24"></script>
+
+  <div id="toast-container"></div>
 </body>
 </html>
