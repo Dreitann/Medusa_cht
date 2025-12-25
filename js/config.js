@@ -1,6 +1,6 @@
 // --- Supabase ---
-export const SUPABASE_URL = 'https://lwmervaxwrllgykcjfpn.supabase.co';
-export const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3bWVydmF4d3JsbGd5a2NqZnBuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0NDk3NjksImV4cCI6MjA2NjAyNTc2OX0.x8Ri1xtidyNqJDl4QgeSzTP2d0FaHLFPV7vBIIytLp4';
+export const SUPABASE_URL = 'https://edjfgdvdknewgfkmsail.supabase.co';
+export const SUPABASE_KEY = 'sb_publishable_J6SoPFzrip8i8pjQcM24Iw_N9tPzc_h';
 export const HW_BUCKET     = 'homework';
 export const VIDEO_BUCKET  = 'videos';
 
