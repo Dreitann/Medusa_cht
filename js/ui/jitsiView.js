@@ -1,11 +1,8 @@
-import { $, setText } from '../utils/dom.js';
+import { $ } from '../utils/dom.js';
 import { JITSI_DOMAIN, JITSI_ROOM } from '../config.js';
 
 export function initJitsi(){
   $('#btn-jitsi')?.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.getElementById('tab-jitsi')?.classList.add('active');
-
     if (!window.jitsiApi){
       window.jitsiApi = new JitsiMeetExternalAPI(JITSI_DOMAIN, {
         roomName: JITSI_ROOM,

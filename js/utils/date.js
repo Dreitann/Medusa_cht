@@ -8,3 +8,10 @@ export function fmtDateTimeRu(d){
   const time = nd.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
   return `${date} ${time}`;
 }
+
+export function combineDayTime(day, time){
+  if (!day) return null;
+  const iso = time ? `${day}T${time}` : day;
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? null : d;
+}

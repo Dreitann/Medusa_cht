@@ -18,20 +18,33 @@
   <!-- Jitsi -->
   <script src="https://meet.jit.si/external_api.js"></script>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="topbar">
-    Привет, <span id="student-name">Студент</span>
+    <div class="topbar-content">
+      <div>
+        <div class="eyebrow">Mentorium</div>
+        <div class="hello">Привет, <span id="student-name">Студент</span></div>
+        <div class="muted small">ID: <span id="student-id">—</span></div>
+      </div>
+      <div class="chip success" id="conn-chip">Supabase готов</div>
+    </div>
   </header>
 
-  <main>
+  <main class="container">
     <!-- 🔥 Ближайшее событие -->
     <section id="tab-next" class="tab active">
-      <div class="card">
-        <div class="card-title">🚀 Ближайшее событие</div>
-        <div id="next-event-content">Требуется авторизация Google</div>
-        <button id="google-auth-btn" class="btn">Войти в Google</button>
+      <div class="card highlight">
+        <div class="card-header">
+          <div class="card-title">🚀 Ближайшее событие</div>
+          <div class="muted small">Из Google или расписания</div>
+        </div>
+        <div id="next-event-content">Требуется авторизация Google или заполненное расписание</div>
+        <button id="google-auth-btn" class="btn ghost">Войти в Google</button>
       </div>
     </section>
 
@@ -52,11 +65,14 @@
     <section id="tab-homework" class="tab">
       <div class="card">
         <div class="card-title">📝 Домашние задания</div>
-        <input type="file" id="hw-file">
-        <button id="hw-upload-btn" class="btn">Загрузить ДЗ</button>
+        <label class="field">
+          <span class="muted small">Файл</span>
+          <input type="file" id="hw-file">
+        </label>
+        <button id="hw-upload-btn" class="btn full">Загрузить ДЗ</button>
         <div id="hw-status" class="muted" style="margin-top:.5rem;"></div>
 
-        <h3 style="margin-top:1rem;">Мои файлы</h3>
+        <h3 class="section-subtitle">Мои файлы</h3>
         <div id="hw-list">Загрузка…</div>
       </div>
     </section>
@@ -65,12 +81,18 @@
     <section id="tab-video" class="tab">
       <div class="card">
         <div class="card-title">🎥 Видеоматериалы</div>
-        <input type="file" id="video-file" accept="video/*">
-        <input type="text" id="video-title" placeholder="Название">
-        <button id="video-upload-btn" class="btn">Загрузить видео</button>
+        <div class="field">
+          <span class="muted small">Файл</span>
+          <input type="file" id="video-file" accept="video/*">
+        </div>
+        <div class="field">
+          <span class="muted small">Название</span>
+          <input type="text" id="video-title" placeholder="Например: Лекция 3">
+        </div>
+        <button id="video-upload-btn" class="btn full">Загрузить видео</button>
         <div id="video-status" class="muted" style="margin-top:.5rem;"></div>
 
-        <h3 style="margin-top:1rem;">Список видео</h3>
+        <h3 class="section-subtitle">Список видео</h3>
         <div id="video-list">Загрузка…</div>
       </div>
     </section>

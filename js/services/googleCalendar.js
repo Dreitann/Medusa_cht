@@ -8,6 +8,10 @@ let cache      = []; // события
 
 // Делам функцию глобально видимой для onload скрипта в index.html
 window.handleClientLoad = function(){
+  if (!window.gapi?.load){
+    console.warn('Google API не загрузился');
+    return;
+  }
   gapi.load('client:auth2', initClient);
 };
 
