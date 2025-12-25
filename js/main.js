@@ -6,6 +6,7 @@ import { initHomeworkUI, renderHomework } from './ui/homeworkView.js';
 import { initVideoUI, renderVideos } from './ui/videoView.js';
 import { initJitsi } from './ui/jitsiView.js';
 import { fetchSchedule, ensureUser } from './services/supabase.js';
+import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
 import { setStatus } from './ui/status.js';
 import { showToast } from './ui/toast.js';
 import * as gcal from './services/googleCalendar.js';
@@ -43,16 +44,18 @@ initHomeworkUI(()=>userId);
 initVideoUI(()=>userId);
 
 async function boot(){
-  if (!window.__ENV__?.SUPABASE_URL || !window.__ENV__?.SUPABASE_KEY){
+  if (!SUPABASE_URL || !SUPABASE_KEY){
     showToast('Заполните SUPABASE_URL и SUPABASE_KEY в env.js', 'error', 5000);
     setStatus('supabase',{state:'error', text:'Конфиг'});
+    return;
   }
 
   try{
     await ensureUser({ id:userId, first_name: tgUser.first_name || 'Студент' });
   }catch(e){
     console.warn('Не удалось создать пользователя', e);
-    showToast('Не удалось синхронизировать пользователя', 'warn');
+    // Не блокируем работу приложения из-за неуспешного upsert пользователя
+    setStatus('supabase',{state:'warn', text:'Без профиля'});
   }
 
   await refreshSchedule();

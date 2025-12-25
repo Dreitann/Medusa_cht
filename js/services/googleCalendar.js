@@ -6,14 +6,22 @@ let gIsReady   = false;
 let isSignedIn = false;
 let cache      = []; // события
 
-// Делам функцию глобально видимой для onload скрипта в index.html
+// Делам функцию глобально видимой для onload скрипта в index.html.
+// Если скрипт Google API придёт раньше, ставим флаг и цепляем позже.
+window.__gapiReady = window.__gapiReady || false;
 window.handleClientLoad = function(){
+  window.__gapiReady = true;
   if (!window.gapi?.load){
     console.warn('Google API не загрузился');
     return;
   }
   gapi.load('client:auth2', initClient);
 };
+
+// Если gapi уже отметился готовым (onload успел), стартуем сразу при загрузке модуля.
+if (window.__gapiReady && window.gapi?.load){
+  gapi.load('client:auth2', initClient);
+}
 
 async function initClient(){
   await gapi.client.init({

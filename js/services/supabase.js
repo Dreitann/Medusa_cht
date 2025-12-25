@@ -1,10 +1,16 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 import { SUPABASE_URL, SUPABASE_KEY, HW_BUCKET, VIDEO_BUCKET } from '../config.js';
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const hasSupabaseConfig = Boolean(SUPABASE_URL && SUPABASE_KEY);
+export const supabase = hasSupabaseConfig ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
+function requireSupabase(){
+  if (!supabase) throw new Error('Supabase не сконфигурирован: задайте SUPABASE_URL и SUPABASE_KEY в env.js');
+}
 
 // --- Пользователь ---
 export async function ensureUser({ id, first_name, role='student' }){
+  requireSupabase();
   if (!id) return;
   const { error } = await supabase
     .from('users')
@@ -14,6 +20,7 @@ export async function ensureUser({ id, first_name, role='student' }){
 
 // --- Расписание ---
 export async function fetchSchedule(userId){
+  requireSupabase();
   const { data, error } = await supabase
     .from('schedule')
     .select('*')
@@ -26,6 +33,7 @@ export async function fetchSchedule(userId){
 
 // --- Домашка ---
 export async function uploadHomework(userId, file){
+  requireSupabase();
   const path = `${userId}/${Date.now()}_${file.name}`;
   const { error } = await supabase.storage.from(HW_BUCKET).upload(path, file);
   if (error) throw error;
@@ -40,6 +48,7 @@ export async function uploadHomework(userId, file){
 }
 
 export async function listHomework(userId){
+  requireSupabase();
   const { data, error } = await supabase
     .from('homework')
     .select('*')
@@ -55,6 +64,7 @@ export async function listHomework(userId){
 
 // --- Видео ---
 export async function uploadVideo(userId, file, title){
+  requireSupabase();
   const path = `${userId}/${Date.now()}_${file.name}`;
   const up = await supabase.storage.from(VIDEO_BUCKET).upload(path, file);
   if (up.error) throw up.error;
@@ -70,6 +80,7 @@ export async function uploadVideo(userId, file, title){
 }
 
 export async function listVideos(){
+  requireSupabase();
   const { data, error } = await supabase.from('videos').select('*').order('uploaded_at',{ascending:false});
   if (error) throw error;
   return (data||[]).map(v => ({
