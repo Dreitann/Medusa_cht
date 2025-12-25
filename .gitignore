@@ -10,6 +10,9 @@ Thumbs.db
 __pycache__/
 *.pyc
 .env
+.env.local
+env.js
+backend/.env
 .venv/
 
 # Node

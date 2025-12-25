@@ -1,19 +1,18 @@
+// Config is populated from window.__ENV__ (see env.sample.js). Do not commit secrets.
+const ENV = window.__ENV__ || {};
+
 // --- Supabase ---
-export const SUPABASE_URL = 'https://edjfgdvdknewgfkmsail.supabase.co';
-export const SUPABASE_KEY = 'sb_publishable_J6SoPFzrip8i8pjQcM24Iw_N9tPzc_h';
-export const HW_BUCKET     = 'homework';
-export const VIDEO_BUCKET  = 'videos';
-const supabase = createClient(
-    "https://lwmervaxwrllgykcjfpn.supabase.co",
-    "PUBLIC_ANON_KEY"
-  );
-  
+export const SUPABASE_URL = ENV.SUPABASE_URL ?? '';
+export const SUPABASE_KEY = ENV.SUPABASE_KEY ?? '';
+export const HW_BUCKET    = ENV.HW_BUCKET    ?? 'homework';
+export const VIDEO_BUCKET = ENV.VIDEO_BUCKET ?? 'videos';
+
 // --- Google ---
-export const GOOGLE_CLIENT_ID = '655071201154-5hfmnua62v2gjqrhicbmnvqobjjqdmp4.apps.googleusercontent.com';
-export const GOOGLE_API_KEY   = 'AIzaSyAg_JiA5kfsgIYCmVHDoMHKITRoe_CyeEE';
+export const GOOGLE_CLIENT_ID = ENV.GOOGLE_CLIENT_ID ?? '';
+export const GOOGLE_API_KEY   = ENV.GOOGLE_API_KEY   ?? '';
 export const DISCOVERY_DOCS   = ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'];
 export const GCAL_SCOPES      = 'https://www.googleapis.com/auth/calendar.events.readonly';
 
 // --- Jitsi ---
-export const JITSI_DOMAIN = 'meet.jit.si';
-export const JITSI_ROOM   = 'MentoriumRoom123';
+export const JITSI_DOMAIN = ENV.JITSI_DOMAIN ?? 'meet.jit.si';
+export const JITSI_ROOM   = ENV.JITSI_ROOM   ?? 'MentoriumRoom123';

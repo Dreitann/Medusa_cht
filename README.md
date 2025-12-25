@@ -12,6 +12,11 @@
    - Upload files to storage
    - Recognize users by Telegram ID
 
+## 🔑 Secrets
+- Скопируй `env.sample.js` → `env.js` (не коммитится) и заполни `SUPABASE_URL`, `SUPABASE_KEY`, Google ключи при необходимости.
+- `env.js` уже подключается в `index.html` до остальных скриптов.
+- Для бота: скопируй `backend/.env.example` → `backend/.env` и пропиши `BOT_TOKEN`.
+
 
 ## 🤖 Telegram Bot Setup
 

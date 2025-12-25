@@ -1,9 +1,12 @@
 import asyncio
+import os
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import WebAppInfo, ReplyKeyboardMarkup, KeyboardButton
 
-# Вставь токен своего бота
-TOKEN = "7901700367:AAFZcoL1NWWrEhtwQFBury02pivHMfzCnzU"
+# Токен задаётся через переменную окружения BOT_TOKEN
+TOKEN = os.environ.get("BOT_TOKEN")
+if not TOKEN:
+  raise RuntimeError("BOT_TOKEN is not set")
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
