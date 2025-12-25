@@ -5,7 +5,7 @@ import { renderCalendar } from './ui/calendarView.js';
 import { initHomeworkUI, renderHomework } from './ui/homeworkView.js';
 import { initVideoUI, renderVideos } from './ui/videoView.js';
 import { initJitsi } from './ui/jitsiView.js';
-import { fetchSchedule } from './services/supabase.js';
+import { fetchSchedule, ensureUser } from './services/supabase.js';
 import * as gcal from './services/googleCalendar.js';
 
 Telegram.WebApp.ready();
@@ -43,6 +43,12 @@ initHomeworkUI(()=>userId);
 initVideoUI(()=>userId);
 
 async function boot(){
+  try{
+    await ensureUser({ id:userId, first_name: tgUser.first_name || 'Студент' });
+  }catch(e){
+    console.warn('Не удалось создать пользователя', e);
+  }
+
   await refreshSchedule();
   await renderNext({ scheduleRows });
   await renderCalendar({ scheduleRows, error:scheduleError });

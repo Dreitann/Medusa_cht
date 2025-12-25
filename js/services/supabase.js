@@ -3,6 +3,15 @@ import { SUPABASE_URL, SUPABASE_KEY, HW_BUCKET, VIDEO_BUCKET } from '../config.j
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// --- Пользователь ---
+export async function ensureUser({ id, first_name, role='student' }){
+  if (!id) return;
+  const { error } = await supabase
+    .from('users')
+    .upsert([{ id, first_name, role }], { onConflict:'id' });
+  if (error) throw error;
+}
+
 // --- Расписание ---
 export async function fetchSchedule(userId){
   const { data, error } = await supabase

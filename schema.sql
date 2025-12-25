@@ -38,6 +38,8 @@ alter table schedule enable row level security;
 alter table homework enable row level security;
 alter table videos enable row level security;
 
+create policy "Allow read" on users for select using (true);
+create policy "Allow upsert" on users for insert with check (true);
 create policy "Allow read" on schedule for select using (true);
 create policy "Allow insert" on homework for insert with check (true);
 create policy "Allow read" on homework for select using (true);
