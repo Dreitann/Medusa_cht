@@ -9,8 +9,8 @@ const supabase = createClient(
   );
   
 // --- Google ---
-export const GOOGLE_CLIENT_ID = '156070127304-l8lqdcetr3rqdln2sfm59a1iu8is421l.apps.googleusercontent.com';
-export const GOOGLE_API_KEY   = 'AIzaSyALADqAQwTUzs1pLyI_ORMI8SULs5T0HN8';
+export const GOOGLE_CLIENT_ID = '655071201154-5hfmnua62v2gjqrhicbmnvqobjjqdmp4.apps.googleusercontent.com';
+export const GOOGLE_API_KEY   = 'AIzaSyAg_JiA5kfsgIYCmVHDoMHKITRoe_CyeEE';
 export const DISCOVERY_DOCS   = ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'];
 export const GCAL_SCOPES      = 'https://www.googleapis.com/auth/calendar.events.readonly';
 
