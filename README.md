@@ -1,4 +1,4 @@
-# Telegram Student WebApp (Supabase)
+# Telegram Student WebApp (Supabase
 
 ## 🔧 Setup Steps
 
