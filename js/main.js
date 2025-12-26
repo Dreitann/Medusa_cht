@@ -52,6 +52,8 @@ async function boot(){
     return;
   }
 
+  let hasRole = false;
+
   try{
     await ensureUser({ id:userId, first_name: tgUser.first_name || 'Студент' });
   }catch(e){
@@ -70,6 +72,7 @@ async function boot(){
         roleEl.style.display = 'inline-flex';
       }
       document.getElementById('access-gate').style.display = 'none';
+      hasRole = true;
     }else{
       const syncBtn = document.getElementById('profile-sync-btn');
       if (syncBtn) syncBtn.style.display = 'inline-flex';
@@ -82,7 +85,12 @@ async function boot(){
     }
   }catch(e){
     console.warn('Не удалось получить профиль', e);
+    const gate = document.getElementById('access-gate');
+    if (gate) gate.style.display = 'flex';
   }
+
+  // Если роли нет — не даём доступ к функционалу до назначения роли
+  if (!hasRole) return;
 
   toggleScheduleForm({
     isTeacher,
@@ -140,6 +148,8 @@ if (accessBtn){
     try{
       await ensureUser({ id:userId, first_name: tgUser.first_name || 'Студент' });
       showToast('Данные переданы. Ждите назначения роли.', 'info');
+      const gate = document.getElementById('access-gate');
+      if (gate) gate.style.display = 'flex';
     }catch(e){
       showToast('Не удалось передать данные: '+e.message, 'error');
     }
