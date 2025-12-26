@@ -72,7 +72,7 @@ export async function renderCalendar({ scheduleRows=[], error=null, onSelectSche
         onSelectSchedule({
           id: info.event.id,
           subject: info.event.title,
-          day: info.event.startStr?.slice(0,10),
+          day: toISODate(info.event.start),
           time: info.event.extendedProps.time,
           meet_link: link,
           user_id: info.event.extendedProps.user_id
@@ -100,7 +100,7 @@ export async function renderCalendar({ scheduleRows=[], error=null, onSelectSche
           }).join('')
         : `<li>Нет событий на ${day}</li>`);
       if (onSelectSchedule){
-        host.querySelectorAll('.event-edit').forEach(btn=>{
+        list.querySelectorAll('.event-edit').forEach(btn=>{
           btn.addEventListener('click', ()=>{
             onSelectSchedule({
               id: btn.dataset.id,

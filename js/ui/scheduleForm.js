@@ -91,4 +91,5 @@ export function selectScheduleForEdit(ev, getUserId){
     $('#event-delete-btn').style.display = 'inline-flex';
     $('#event-submit-btn').textContent = 'Сохранить';
   }
+  document.getElementById('teacher-schedule-card')?.scrollIntoView({behavior:'smooth', block:'start'});
 }
