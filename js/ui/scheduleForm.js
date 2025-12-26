@@ -5,7 +5,11 @@ import { showToast } from './toast.js';
 export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
   const card = $('#teacher-schedule-card');
   if (!card) return;
+
+  // Всегда обновляем видимость
   card.style.display = isTeacher ? 'block' : 'none';
+
+  // Навешиваем обработчик только один раз
   if (card.dataset.bound) return;
   card.dataset.bound = '1';
 

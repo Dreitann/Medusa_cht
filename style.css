@@ -132,6 +132,7 @@ body{
   border:1px solid var(--border);
   min-height:360px;
 }
+.fc{width:100%;}
 .fc .fc-toolbar.fc-header-toolbar{
   margin-bottom:6px;
 }
@@ -156,6 +157,11 @@ body{
 .fc .fc-daygrid-body table{width:100%;}
 .fc .fc-scrollgrid-sync-table{width:100%;}
 .fc .fc-daygrid-day-events{min-height:26px;}
+
+#teacher-schedule-card{
+  margin-bottom:12px;
+  padding:14px;
+}
 .fc-theme-standard .fc-scrollgrid{border:1px solid var(--border);}
 .fc .fc-daygrid-day-number{color:var(--fg);}
 .fc-daygrid-day-frame{cursor:pointer;}
