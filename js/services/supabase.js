@@ -9,13 +9,23 @@ function requireSupabase(){
 }
 
 // --- Пользователь ---
-export async function ensureUser({ id, first_name, role='student' }){
+export async function ensureUser({ id, first_name, role }){
   requireSupabase();
   if (!id) return;
+  const payload = { id, first_name };
+  if (role) payload.role = role;
   const { error } = await supabase
     .from('users')
-    .upsert([{ id, first_name, role }], { onConflict:'id' });
+    .upsert([payload], { onConflict:'id' });
   if (error) throw error;
+}
+
+export async function fetchUserProfile(id){
+  requireSupabase();
+  if (!id) return null;
+  const { data, error } = await supabase.from('users').select('id, first_name, role').eq('id', id).single();
+  if (error) throw error;
+  return data;
 }
 
 // --- Расписание ---
@@ -29,6 +39,17 @@ export async function fetchSchedule(userId){
     .order('time', { ascending:true });
   if (error) throw error;
   return data || [];
+}
+
+export async function createSchedule({ user_id, subject, day, time, meet_link }){
+  requireSupabase();
+  const { data, error } = await supabase
+    .from('schedule')
+    .insert([{ user_id, subject, day, time, meet_link }])
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
 }
 
 // --- Домашка ---

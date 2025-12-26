@@ -4,15 +4,16 @@ import * as gcal from '../services/googleCalendar.js';
 import { openMeeting } from '../services/meetings.js';
 
 let calendar;
+const clean = v => String(v ?? '').replace(/['"]/g,'').trim();
 
 function mapScheduleToEvents(rows){
   return rows.map(r => {
-    const dt = combineDayTime(r.day, r.time);
+    const dt = combineDayTime(clean(r.day), clean(r.time));
     if (!dt) return null;
     return {
-      title: r.subject || 'Занятие',
+      title: clean(r.subject) || 'Занятие',
       start: dt,
-      extendedProps: { link: r.meet_link || null, provider: 'schedule', time: r.time }
+      extendedProps: { link: r.meet_link || null, provider: 'schedule', time: clean(r.time) }
     };
   }).filter(Boolean);
 }

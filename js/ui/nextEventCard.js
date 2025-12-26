@@ -2,6 +2,8 @@ import { $, setHTML } from '../utils/dom.js';
 import { fmtDateTimeRu, combineDayTime } from '../utils/date.js';
 import * as gcal from '../services/googleCalendar.js';
 
+const clean = v => String(v ?? '').replace(/['"]/g,'').trim();
+
 export function bindGoogleAuthButton(){
   const btn = $('#google-auth-btn');
   if (!btn) return;
@@ -15,9 +17,9 @@ export function bindGoogleAuthButton(){
 }
 
 function mapScheduleRow(row){
-  const dt = combineDayTime(row.day, row.time);
+  const dt = combineDayTime(clean(row.day), clean(row.time));
   if (!dt) return null;
-  return { title: row.subject || 'Занятие', start: dt, provider:'schedule' };
+  return { title: clean(row.subject) || 'Занятие', start: dt, provider:'schedule', link: row.meet_link || null };
 }
 
 function pickNext(events){

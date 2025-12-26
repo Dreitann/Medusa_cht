@@ -51,6 +51,7 @@ body{
   border-color:rgba(74,222,128,0.3);
   box-shadow:0 20px 60px rgba(74,222,128,0.08);
 }
+.subcard{margin:12px 0 16px;background:rgba(255,255,255,0.03);}
 .card-header{display:flex;justify-content:space-between;align-items:center;gap:10px;}
 .card-title{font-weight:800;font-size:18px;margin-bottom:6px;}
 .muted{color:var(--muted);}
@@ -119,6 +120,7 @@ body{
   color:var(--fg);
 }
 .field input[type="file"]{padding:12px;}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;}
 
 .button-row{display:flex;gap:8px;flex-wrap:wrap}
 
@@ -128,6 +130,21 @@ body{
   border-radius:14px;
   padding:8px;
   border:1px solid var(--border);
+}
+.fc .fc-toolbar.fc-header-toolbar{
+  margin-bottom:6px;
+}
+.fc-toolbar-title{
+  font-size:18px;
+  font-weight:800;
+}
+.fc .fc-button-primary{
+  background:rgba(125,211,252,0.2);
+  border:none;
+  color:#e5edff;
+}
+.fc .fc-button-primary:not(:disabled).fc-button-active{
+  background:rgba(125,211,252,0.35);
 }
 .fc-theme-standard .fc-scrollgrid{border:1px solid var(--border);}
 .fc .fc-daygrid-day-number{color:var(--fg);}

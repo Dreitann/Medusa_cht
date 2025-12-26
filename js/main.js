@@ -6,14 +6,17 @@ import { initHomeworkUI, renderHomework } from './ui/homeworkView.js';
 import { initVideoUI, renderVideos } from './ui/videoView.js';
 import { initJitsi } from './ui/jitsiView.js';
 import { fetchSchedule, ensureUser } from './services/supabase.js';
-import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
+import { SUPABASE_URL, SUPABASE_KEY, TEACHER_IDS } from './config.js';
 import { setStatus } from './ui/status.js';
 import { showToast } from './ui/toast.js';
 import * as gcal from './services/googleCalendar.js';
+import { toggleScheduleForm } from './ui/scheduleForm.js';
+import { fetchUserProfile } from './services/supabase.js';
 
 Telegram.WebApp.ready();
 const tgUser = Telegram.WebApp.initDataUnsafe?.user || {};
 const userId = tgUser.id ?? 999999;
+let isTeacher = TEACHER_IDS.includes(String(userId));
 setText(document.getElementById('student-name'), tgUser.first_name || 'Студент');
 setText(document.getElementById('student-id'), tgUser.id ? String(tgUser.id) : 'debug');
 
@@ -57,6 +60,23 @@ async function boot(){
     // Не блокируем работу приложения из-за неуспешного upsert пользователя
     setStatus('supabase',{state:'warn', text:'Без профиля'});
   }
+
+  try{
+    const profile = await fetchUserProfile(userId);
+    if (profile?.role === 'teacher') isTeacher = true;
+  }catch(e){
+    console.warn('Не удалось получить профиль', e);
+  }
+
+  toggleScheduleForm({
+    isTeacher,
+    getUserId: ()=>userId,
+    refreshCalendar: async ()=>{
+      await refreshSchedule();
+      await renderNext({ scheduleRows });
+      await renderCalendar({ scheduleRows, error:scheduleError });
+    }
+  });
 
   await refreshSchedule();
   await renderNext({ scheduleRows });

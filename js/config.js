@@ -6,6 +6,7 @@ export const SUPABASE_URL = ENV.SUPABASE_URL ?? '';
 export const SUPABASE_KEY = ENV.SUPABASE_KEY ?? '';
 export const HW_BUCKET    = ENV.HW_BUCKET    ?? 'homework';
 export const VIDEO_BUCKET = ENV.VIDEO_BUCKET ?? 'videos';
+export const TEACHER_IDS  = (ENV.TEACHER_IDS ? String(ENV.TEACHER_IDS).split(',') : []).map(id=>id.trim()).filter(Boolean);
 
 // --- Google ---
 export const GOOGLE_CLIENT_ID = ENV.GOOGLE_CLIENT_ID ?? '';
