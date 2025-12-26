@@ -39,6 +39,26 @@ async function refreshSchedule(){
   }
 }
 
+function runApp(){
+  toggleScheduleForm({
+    isTeacher,
+    getUserId: ()=>userId,
+    refreshCalendar: async ()=>{
+      await refreshSchedule();
+      await renderNext({ scheduleRows });
+      await renderCalendar({ scheduleRows, error:scheduleError });
+    }
+  });
+
+  refreshSchedule().then(async ()=>{
+    await renderNext({ scheduleRows });
+    await renderCalendar({ scheduleRows, error:scheduleError });
+  });
+
+  renderHomework(userId);
+  renderVideos();
+}
+
 initTabs();
 initJitsi();
 bindGoogleAuthButton();
@@ -55,24 +75,16 @@ async function boot(){
   let hasRole = false;
 
   try{
-    await ensureUser({ id:userId, first_name: tgUser.first_name || 'Студент' });
-  }catch(e){
-    console.warn('Не удалось создать пользователя', e);
-    // Не блокируем работу приложения из-за неуспешного upsert пользователя
-    setStatus('supabase',{state:'warn', text:'Без профиля'});
-  }
-
-  try{
     const profile = await fetchUserProfile(userId);
     if (profile?.role === 'teacher') isTeacher = true;
     if (profile?.role){
+      hasRole = true;
       const roleEl = document.getElementById('student-role');
       if (roleEl){
         roleEl.textContent = profile.role;
         roleEl.style.display = 'inline-flex';
       }
       document.getElementById('access-gate').style.display = 'none';
-      hasRole = true;
     }else{
       const syncBtn = document.getElementById('profile-sync-btn');
       if (syncBtn) syncBtn.style.display = 'inline-flex';
@@ -89,26 +101,8 @@ async function boot(){
     if (gate) gate.style.display = 'flex';
   }
 
-  // Если роли нет — не даём доступ к функционалу до назначения роли
   if (!hasRole) return;
-
-  toggleScheduleForm({
-    isTeacher,
-    getUserId: ()=>userId,
-    refreshCalendar: async ()=>{
-      await refreshSchedule();
-      await renderNext({ scheduleRows });
-      await renderCalendar({ scheduleRows, error:scheduleError });
-    }
-  });
-
-  await refreshSchedule();
-  await renderNext({ scheduleRows });
-  await renderCalendar({ scheduleRows, error:scheduleError });
-
-  // Домашка/Видео
-  renderHomework(userId);
-  renderVideos();
+  runApp();
 }
 
 boot();
@@ -135,6 +129,14 @@ document.getElementById('profile-sync-btn')?.addEventListener('click', async ()=
           await renderCalendar({ scheduleRows, error:scheduleError });
         }
       });
+      runApp();
+    }else{
+      const gate = document.getElementById('access-gate');
+      const msg = document.getElementById('access-msg');
+      if (gate){
+        gate.style.display = 'flex';
+        if (msg) msg.textContent = 'Роль ещё не назначена. Назначьте роль в Supabase и нажмите обновить.';
+      }
     }
     showToast('Профиль обновлён', 'info');
   }catch(e){
