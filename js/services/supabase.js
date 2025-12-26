@@ -23,9 +23,13 @@ export async function ensureUser({ id, first_name, role }){
 export async function fetchUserProfile(id){
   requireSupabase();
   if (!id) return null;
-  const { data, error } = await supabase.from('users').select('id, first_name, role').eq('id', id).single();
-  if (error) throw error;
-  return data;
+  const { data, error, status } = await supabase.from('users').select('id, first_name, role').eq('id', id).single();
+  if (error){
+    // 406/ PGRST116 -> no rows
+    if (status === 406 || error.code === 'PGRST116') return null;
+    throw error;
+  }
+  return data || null;
 }
 
 // --- Расписание ---

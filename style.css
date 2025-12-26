@@ -108,6 +108,12 @@ body{
   box-shadow:none;
 }
 .btn.ghost,.btn.ghost:visited{color:var(--fg);}
+.btn.tiny{
+  font-size:11px;
+  padding:6px 8px;
+  border-radius:8px;
+  box-shadow:none;
+}
 
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
 .field input[type="text"],

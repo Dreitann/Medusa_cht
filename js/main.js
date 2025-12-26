@@ -69,6 +69,9 @@ async function boot(){
         roleEl.textContent = profile.role;
         roleEl.style.display = 'inline-flex';
       }
+    }else{
+      const syncBtn = document.getElementById('profile-sync-btn');
+      if (syncBtn) syncBtn.style.display = 'inline-flex';
     }
   }catch(e){
     console.warn('Не удалось получить профиль', e);
@@ -94,6 +97,24 @@ async function boot(){
 }
 
 boot();
+
+document.getElementById('profile-sync-btn')?.addEventListener('click', async ()=>{
+  try{
+    await ensureUser({ id:userId, first_name: tgUser.first_name || 'Студент' });
+    const profile = await fetchUserProfile(userId);
+    if (profile?.role){
+      const roleEl = document.getElementById('student-role');
+      if (roleEl){
+        roleEl.textContent = profile.role;
+        roleEl.style.display = 'inline-flex';
+      }
+      document.getElementById('profile-sync-btn').style.display = 'none';
+    }
+    showToast('Профиль обновлён', 'info');
+  }catch(e){
+    showToast('Не удалось обновить профиль: '+e.message, 'error');
+  }
+});
 
 // Реагируем на готовность/авторизацию Google
 gcal.onGoogleReady(async ()=>{
