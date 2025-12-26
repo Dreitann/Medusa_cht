@@ -98,7 +98,11 @@ async function boot(){
   }catch(e){
     console.warn('Не удалось получить профиль', e);
     const gate = document.getElementById('access-gate');
-    if (gate) gate.style.display = 'flex';
+    if (gate){
+      gate.style.display = 'flex';
+      const msg = document.getElementById('access-msg');
+      if (msg) msg.textContent = 'Ошибка запроса профиля. Нажмите "Передать данные" и повторите после назначения роли.';
+    }
   }
 
   if (!hasRole) return;
