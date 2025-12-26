@@ -56,7 +56,7 @@ export async function renderCalendar({ scheduleRows=[], error=null } = {}){
   if (!events.length){
     const msg = error ? 'Не удалось загрузить расписание' : 'Событий нет';
     setHTML(list, `<li>${msg}</li>`);
-    host.innerHTML = '';
+    host.innerHTML = '<div class="muted small" style="padding:12px;">Нет событий для отображения</div>';
     return;
   }
 
