@@ -20,6 +20,25 @@ export async function ensureUser({ id, first_name, role }){
   if (error) throw error;
 }
 
+// Создаём пользователя только если его ещё нет, без присвоения роли
+export async function ensureUserExists({ id, first_name }){
+  requireSupabase();
+  if (!id) return null;
+  try{
+    const existing = await fetchUserProfile(id);
+    if (existing) return existing;
+  }catch(_e){
+    // если нет строки, создаём
+  }
+  const { data, error } = await supabase
+    .from('users')
+    .insert([{ id, first_name, role: null }])
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
 export async function fetchUserProfile(id){
   requireSupabase();
   if (!id) return null;

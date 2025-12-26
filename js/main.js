@@ -5,7 +5,7 @@ import { renderCalendar } from './ui/calendarView.js';
 import { initHomeworkUI, renderHomework } from './ui/homeworkView.js';
 import { initVideoUI, renderVideos } from './ui/videoView.js';
 import { initJitsi } from './ui/jitsiView.js';
-import { fetchSchedule, ensureUser, fetchUserProfile } from './services/supabase.js';
+import { fetchSchedule, ensureUserExists, fetchUserProfile } from './services/supabase.js';
 import { SUPABASE_URL, SUPABASE_KEY, TEACHER_IDS } from './config.js';
 import { setStatus } from './ui/status.js';
 import { showToast } from './ui/toast.js';
@@ -109,7 +109,7 @@ boot();
 
 document.getElementById('profile-sync-btn')?.addEventListener('click', async ()=>{
   try{
-    await ensureUser({ id:userId, first_name: tgUser.first_name || 'Студент' });
+    await ensureUserExists({ id:userId, first_name: tgUser.first_name || 'Студент' });
     const profile = await fetchUserProfile(userId);
     if (profile?.role){
       const roleEl = document.getElementById('student-role');
@@ -148,7 +148,7 @@ const accessBtn = document.getElementById('access-btn');
 if (accessBtn){
   accessBtn.addEventListener('click', async ()=>{
     try{
-      await ensureUser({ id:userId, first_name: tgUser.first_name || 'Студент' });
+      await ensureUserExists({ id:userId, first_name: tgUser.first_name || 'Студент' });
       showToast('Данные переданы. Ждите назначения роли.', 'info');
       const gate = document.getElementById('access-gate');
       if (gate) gate.style.display = 'flex';

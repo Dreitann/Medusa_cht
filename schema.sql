@@ -2,7 +2,7 @@
 create table users (
   id bigint primary key,
   first_name text,
-  role text default 'student'
+  role text
 );
 
 -- schedule
@@ -46,3 +46,6 @@ create policy "Allow insert" on homework for insert with check (true);
 create policy "Allow read" on homework for select using (true);
 create policy "Allow read" on videos for select using (true);
 create policy "Allow insert" on videos for insert with check (true);
+
+-- Удаляем дефолт роли, чтобы новая запись создавалась без роли
+alter table users alter column role drop default;
