@@ -10,7 +10,7 @@ import { SUPABASE_URL, SUPABASE_KEY, TEACHER_IDS } from './config.js';
 import { setStatus } from './ui/status.js';
 import { showToast } from './ui/toast.js';
 import * as gcal from './services/googleCalendar.js';
-import { toggleScheduleForm } from './ui/scheduleForm.js';
+import { toggleScheduleForm, selectScheduleForEdit } from './ui/scheduleForm.js';
 
 Telegram.WebApp.ready();
 const tgUser = Telegram.WebApp.initDataUnsafe?.user || {};
@@ -46,13 +46,13 @@ function runApp(){
     refreshCalendar: async ()=>{
       await refreshSchedule();
       await renderNext({ scheduleRows });
-      await renderCalendar({ scheduleRows, error:scheduleError });
+      await renderCalendar({ scheduleRows, error:scheduleError, onSelectSchedule: isTeacher ? onScheduleSelect : null });
     }
   });
 
   refreshSchedule().then(async ()=>{
     await renderNext({ scheduleRows });
-    await renderCalendar({ scheduleRows, error:scheduleError });
+    await renderCalendar({ scheduleRows, error:scheduleError, onSelectSchedule: isTeacher ? onScheduleSelect : null });
   });
 
   renderHomework(userId);
@@ -130,7 +130,7 @@ document.getElementById('profile-sync-btn')?.addEventListener('click', async ()=
         refreshCalendar: async ()=>{
           await refreshSchedule();
           await renderNext({ scheduleRows });
-          await renderCalendar({ scheduleRows, error:scheduleError });
+          await renderCalendar({ scheduleRows, error:scheduleError, onSelectSchedule: isTeacher ? onScheduleSelect : null });
         }
       });
       runApp();
@@ -169,7 +169,7 @@ gcal.onGoogleReady(async ()=>{
     : { state:'warn', text:'Войти' });
   if (gcal.isAuthorized()){
     await renderNext({ scheduleRows });
-    await renderCalendar({ scheduleRows, error:scheduleError });
+    await renderCalendar({ scheduleRows, error:scheduleError, onSelectSchedule: isTeacher ? onScheduleSelect : null });
   }
 });
 gcal.onSigninChange(async signed=>{
@@ -178,9 +178,13 @@ gcal.onSigninChange(async signed=>{
     : { state:'warn', text:'Войти' });
   if (signed){
     await renderNext({ scheduleRows });
-    await renderCalendar({ scheduleRows, error:scheduleError });
+    await renderCalendar({ scheduleRows, error:scheduleError, onSelectSchedule: isTeacher ? onScheduleSelect : null });
   }
 });
 
 // По умолчанию показываем ближайшее
 document.getElementById('btn-next')?.click();
+
+function onScheduleSelect(ev){
+  selectScheduleForEdit(ev, ()=>userId);
+}

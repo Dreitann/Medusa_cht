@@ -55,7 +55,7 @@
           <div class="muted small">Из Google или расписания</div>
         </div>
         <div id="next-event-content">Требуется авторизация Google или заполненное расписание</div>
-        <button id="google-auth-btn" class="btn ghost">Войти в Google</button>
+        <button id="google-auth-btn" class="btn ghost" style="display:none;">Войти в Google</button>
       </div>
     </section>
 
@@ -67,6 +67,7 @@
         <div id="teacher-schedule-card" class="card subcard" style="display:none;">
           <div class="card-title">➕ Добавить событие ученику</div>
           <div class="grid-2">
+            <input type="hidden" id="event-id">
             <label class="field">
               <span class="muted small">ID ученика</span>
               <input type="number" id="event-student-id" placeholder="Telegram ID ученика">
@@ -87,8 +88,15 @@
               <span class="muted small">Ссылка на встречу (опционально)</span>
               <input type="url" id="event-link" placeholder="https://meet...">
             </label>
+            <label class="field">
+              <span class="muted small">Повторять каждую неделю (кол-во доп. недель)</span>
+              <input type="number" min="0" max="20" id="event-repeat" value="0">
+            </label>
           </div>
-          <button class="btn full" id="event-submit-btn">Создать событие</button>
+          <div class="button-row">
+            <button class="btn full" id="event-submit-btn">Создать событие</button>
+            <button class="btn ghost full" id="event-delete-btn" style="display:none;">Удалить</button>
+          </div>
         </div>
 
         <div id="calendar"></div>

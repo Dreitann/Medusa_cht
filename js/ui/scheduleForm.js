@@ -1,6 +1,8 @@
 import { $ } from '../utils/dom.js';
-import { createSchedule } from '../services/supabase.js';
+import { createScheduleBatch, updateSchedule, deleteSchedule } from '../services/supabase.js';
 import { showToast } from './toast.js';
+
+let currentId = null;
 
 export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
   const card = $('#teacher-schedule-card');
@@ -22,6 +24,7 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
     const isoDay = dayInput ? new Date(dayInput).toISOString().slice(0,10) : '';
     const time = $('#event-time').value;
     const meet_link = $('#event-link').value.trim() || null;
+    const repeatWeeks = Number($('#event-repeat').value || 0);
 
     if (!user_id || !subject || !isoDay || !time){
       showToast('Заполните ID, тему, дату и время', 'warn');
@@ -29,8 +32,14 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
     }
     $('#event-submit-btn').disabled = true;
     try{
-      await createSchedule({ user_id, subject, day: isoDay, time, meet_link });
-      showToast('Событие добавлено', 'info');
+      if (currentId){
+        await updateSchedule(currentId, { user_id, subject, day: isoDay, time, meet_link });
+        showToast('Событие обновлено', 'info');
+      }else{
+        await createScheduleBatch({ user_id, subject, day: isoDay, time, meet_link, repeatWeeks });
+        showToast('Событие добавлено', 'info');
+      }
+      resetForm(getUserId());
       if (typeof refreshCalendar === 'function'){
         await refreshCalendar();
       }
@@ -40,4 +49,46 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
       $('#event-submit-btn').disabled = false;
     }
   });
+
+  $('#event-delete-btn')?.addEventListener('click', async ()=>{
+    if (!currentId) return;
+    try{
+      await deleteSchedule(currentId);
+      showToast('Событие удалено', 'info');
+      resetForm(getUserId());
+      if (typeof refreshCalendar === 'function'){
+        await refreshCalendar();
+      }
+    }catch(e){
+      showToast('Не удалось удалить событие: '+e.message, 'error');
+    }
+  });
+}
+
+function resetForm(defaultUserId){
+  currentId = null;
+  $('#event-id').value = '';
+  $('#event-student-id').value = defaultUserId;
+  $('#event-subject').value = '';
+  $('#event-date').value = '';
+  $('#event-time').value = '';
+  $('#event-link').value = '';
+  $('#event-repeat').value = 0;
+  $('#event-delete-btn').style.display = 'none';
+  $('#event-submit-btn').textContent = 'Создать событие';
+}
+
+export function selectScheduleForEdit(ev, getUserId){
+  currentId = ev?.id || null;
+  $('#event-id').value = currentId || '';
+  $('#event-student-id').value = ev?.user_id || getUserId();
+  $('#event-subject').value = ev?.subject || '';
+  $('#event-date').value = ev?.day || '';
+  $('#event-time').value = ev?.time || '';
+  $('#event-link').value = ev?.meet_link || '';
+  $('#event-repeat').value = 0;
+  if (currentId){
+    $('#event-delete-btn').style.display = 'inline-flex';
+    $('#event-submit-btn').textContent = 'Сохранить';
+  }
 }

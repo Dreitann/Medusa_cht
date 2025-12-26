@@ -75,6 +75,34 @@ export async function createSchedule({ user_id, subject, day, time, meet_link })
   return data;
 }
 
+export async function createScheduleBatch({ user_id, subject, day, time, meet_link, repeatWeeks = 0 }){
+  requireSupabase();
+  const baseDate = new Date(day);
+  const rows = [];
+  for (let i=0; i<=repeatWeeks; i++){
+    const d = new Date(baseDate);
+    d.setDate(d.getDate() + i*7);
+    const iso = d.toISOString().slice(0,10);
+    rows.push({ user_id, subject, day: iso, time, meet_link });
+  }
+  const { data, error } = await supabase.from('schedule').insert(rows).select();
+  if (error) throw error;
+  return data;
+}
+
+export async function updateSchedule(id, payload){
+  requireSupabase();
+  const { data, error } = await supabase.from('schedule').update(payload).eq('id', id).select().single();
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteSchedule(id){
+  requireSupabase();
+  const { error } = await supabase.from('schedule').delete().eq('id', id);
+  if (error) throw error;
+}
+
 // --- Домашка ---
 export async function uploadHomework(userId, file){
   requireSupabase();
