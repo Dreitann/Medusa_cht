@@ -6,8 +6,8 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
   const card = $('#teacher-schedule-card');
   if (!card) return;
 
-  // Временно показываем форму всем, чтобы не терять доступ (даже если роль не распознана)
-  card.style.display = 'block';
+  // Показываем форму только для teacher
+  card.style.display = isTeacher ? 'block' : 'none';
 
   // Навешиваем обработчик только один раз
   if (card.dataset.bound) return;
