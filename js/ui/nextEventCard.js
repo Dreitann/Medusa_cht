@@ -50,5 +50,6 @@ export async function renderNext({ scheduleRows=[] } = {}){
   if (!ev) return setHTML(dst,'Нет предстоящих событий');
 
   const sourceLabel = ev.provider === 'google' ? 'Google Calendar' : 'Расписание Supabase';
-  setHTML(dst, `<div class="pill">${sourceLabel}</div><b>${ev.title}</b><br>${fmtDateTimeRu(ev.start)}`);
+  const btn = ev.link ? `<div style="margin-top:8px;"><a class="btn ghost" href="${ev.link}" target="_blank">Перейти в встречу</a></div>` : '';
+  setHTML(dst, `<div class="pill">${sourceLabel}</div><b>${ev.title}</b><br>${fmtDateTimeRu(ev.start)}${btn}`);
 }

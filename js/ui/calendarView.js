@@ -80,7 +80,8 @@ export async function renderCalendar({ scheduleRows=[], error=null } = {}){
             const parsed = new Date(it.start);
             const time = it.extendedProps.time
               || (!Number.isNaN(parsed.getTime()) ? parsed.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '');
-            return `<li><span class="pill pill-${src.toLowerCase()}">${src}</span> ${time} — ${it.title}</li>`;
+            const linkBtn = it.extendedProps.link ? `<a class="btn ghost" style="margin-left:8px;" href="${it.extendedProps.link}" target="_blank">Ссылка</a>` : '';
+            return `<li><span class="pill pill-${src.toLowerCase()}">${src}</span> ${time} — ${it.title} ${linkBtn}</li>`;
           }).join('')
         : `<li>Нет событий на ${day}</li>`);
     }

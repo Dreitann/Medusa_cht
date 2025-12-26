@@ -146,6 +146,8 @@ body{
 .fc .fc-button-primary:not(:disabled).fc-button-active{
   background:rgba(125,211,252,0.35);
 }
+.fc .fc-daygrid-day-frame{min-height:88px;}
+.fc-daygrid-event{white-space:normal;}
 .fc-theme-standard .fc-scrollgrid{border:1px solid var(--border);}
 .fc .fc-daygrid-day-number{color:var(--fg);}
 .fc-daygrid-day-frame{cursor:pointer;}

@@ -14,17 +14,18 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
   $('#event-submit-btn')?.addEventListener('click', async ()=>{
     const user_id = Number($('#event-student-id').value.trim() || getUserId());
     const subject = $('#event-subject').value.trim();
-    const day = $('#event-date').value;
+    const dayInput = $('#event-date').value;
+    const isoDay = dayInput ? new Date(dayInput).toISOString().slice(0,10) : '';
     const time = $('#event-time').value;
     const meet_link = $('#event-link').value.trim() || null;
 
-    if (!user_id || !subject || !day || !time){
+    if (!user_id || !subject || !isoDay || !time){
       showToast('Заполните ID, тему, дату и время', 'warn');
       return;
     }
     $('#event-submit-btn').disabled = true;
     try{
-      await createSchedule({ user_id, subject, day, time, meet_link });
+      await createSchedule({ user_id, subject, day: isoDay, time, meet_link });
       showToast('Событие добавлено', 'info');
       if (typeof refreshCalendar === 'function'){
         await refreshCalendar();
