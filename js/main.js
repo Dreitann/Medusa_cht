@@ -69,9 +69,16 @@ async function boot(){
         roleEl.textContent = profile.role;
         roleEl.style.display = 'inline-flex';
       }
+      document.getElementById('access-gate').style.display = 'none';
     }else{
       const syncBtn = document.getElementById('profile-sync-btn');
       if (syncBtn) syncBtn.style.display = 'inline-flex';
+      const gate = document.getElementById('access-gate');
+      const msg = document.getElementById('access-msg');
+      if (gate){
+        gate.style.display = 'flex';
+        if (msg) msg.textContent = 'Нажмите "Передать данные". Мы добавим вас в список и откроем доступ после назначения роли.';
+      }
     }
   }catch(e){
     console.warn('Не удалось получить профиль', e);
@@ -109,12 +116,35 @@ document.getElementById('profile-sync-btn')?.addEventListener('click', async ()=
         roleEl.style.display = 'inline-flex';
       }
       document.getElementById('profile-sync-btn').style.display = 'none';
+      document.getElementById('access-gate').style.display = 'none';
+      isTeacher = profile.role === 'teacher';
+      toggleScheduleForm({
+        isTeacher,
+        getUserId: ()=>userId,
+        refreshCalendar: async ()=>{
+          await refreshSchedule();
+          await renderNext({ scheduleRows });
+          await renderCalendar({ scheduleRows, error:scheduleError });
+        }
+      });
     }
     showToast('Профиль обновлён', 'info');
   }catch(e){
     showToast('Не удалось обновить профиль: '+e.message, 'error');
   }
 });
+
+const accessBtn = document.getElementById('access-btn');
+if (accessBtn){
+  accessBtn.addEventListener('click', async ()=>{
+    try{
+      await ensureUser({ id:userId, first_name: tgUser.first_name || 'Студент' });
+      showToast('Данные переданы. Ждите назначения роли.', 'info');
+    }catch(e){
+      showToast('Не удалось передать данные: '+e.message, 'error');
+    }
+  });
+}
 
 // Реагируем на готовность/авторизацию Google
 gcal.onGoogleReady(async ()=>{
