@@ -12,7 +12,9 @@ create table schedule (
   subject text,
   day text,
   time text,
-  meet_link text
+  meet_link text,
+  duration_minutes int,
+  group_name text
 );
 
 -- homework

@@ -92,6 +92,14 @@
               <span class="muted small">Повторять каждую неделю (кол-во доп. недель)</span>
               <input type="number" min="0" max="20" id="event-repeat" value="0">
             </label>
+            <label class="field">
+              <span class="muted small">Длительность, мин</span>
+              <input type="number" min="10" max="300" id="event-duration" value="60">
+            </label>
+            <label class="field">
+              <span class="muted small">Группа/класс (опционально)</span>
+              <input type="text" id="event-group" placeholder="Например: 7А или Группа 3">
+            </label>
           </div>
           <div class="button-row">
             <button class="btn full" id="event-submit-btn">Создать событие</button>

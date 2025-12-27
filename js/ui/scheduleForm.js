@@ -25,6 +25,8 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
     const time = $('#event-time').value;
     const meet_link = $('#event-link').value.trim() || null;
     const repeatWeeks = Number($('#event-repeat').value || 0);
+    const duration_minutes = Number($('#event-duration').value || 60);
+    const group_name = $('#event-group').value.trim() || null;
 
     if (!user_id || !subject || !isoDay || !time){
       showToast('Заполните ID, тему, дату и время', 'warn');
@@ -37,10 +39,10 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
         if (!idNum){
           throw new Error('Не выбран слот для редактирования');
         }
-        await updateSchedule(idNum, { user_id, subject, day: isoDay, time, meet_link });
+        await updateSchedule(idNum, { user_id, subject, day: isoDay, time, meet_link, duration_minutes, group_name });
         showToast('Событие обновлено', 'info');
       }else{
-        await createScheduleBatch({ user_id, subject, day: isoDay, time, meet_link, repeatWeeks });
+        await createScheduleBatch({ user_id, subject, day: isoDay, time, meet_link, repeatWeeks, duration_minutes, group_name });
         showToast('Событие добавлено', 'info');
       }
       resetForm(getUserId());
@@ -91,6 +93,8 @@ export function selectScheduleForEdit(ev, getUserId){
   $('#event-time').value = ev?.time || '';
   $('#event-link').value = ev?.meet_link || '';
   $('#event-repeat').value = 0;
+  $('#event-duration').value = ev?.duration_minutes || 60;
+  $('#event-group').value = ev?.group_name || '';
   if (currentId){
     $('#event-delete-btn').style.display = 'inline-flex';
     $('#event-submit-btn').textContent = 'Сохранить';

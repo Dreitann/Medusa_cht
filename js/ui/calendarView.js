@@ -14,7 +14,14 @@ function mapScheduleToEvents(rows){
       id: r.id,
       title: clean(r.subject) || 'Занятие',
       start: dt,
-      extendedProps: { link: r.meet_link || null, provider: 'schedule', time: clean(r.time), user_id: r.user_id }
+      extendedProps: {
+        link: r.meet_link || null,
+        provider: 'schedule',
+        time: clean(r.time),
+        user_id: r.user_id,
+        duration_minutes: r.duration_minutes,
+        group_name: r.group_name
+      }
     };
   }).filter(Boolean);
 }
@@ -75,7 +82,9 @@ export async function renderCalendar({ scheduleRows=[], error=null, onSelectSche
           day: toISODate(info.event.start),
           time: info.event.extendedProps.time,
           meet_link: link,
-          user_id: info.event.extendedProps.user_id
+          user_id: info.event.extendedProps.user_id,
+          duration_minutes: info.event.extendedProps.duration_minutes,
+          group_name: info.event.extendedProps.group_name
         });
         return;
       }
@@ -94,9 +103,11 @@ export async function renderCalendar({ scheduleRows=[], error=null, onSelectSche
               || (!Number.isNaN(parsed.getTime()) ? parsed.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '');
             const linkBtn = it.extendedProps.link ? `<a class="btn ghost" style="margin-left:8px;" href="${it.extendedProps.link}" target="_blank">Ссылка</a>` : '';
             const editBtn = onSelectSchedule && it.extendedProps.provider === 'schedule'
-              ? `<button class="btn tiny ghost event-edit" data-id="${it.id||''}" data-subject="${it.title}" data-day="${toISODate(it.start)}" data-time="${it.extendedProps.time||''}" data-link="${it.extendedProps.link||''}" data-user="${it.extendedProps.user_id||''}">Редактировать</button>`
+              ? `<button class="btn tiny ghost event-edit" data-id="${it.id||''}" data-subject="${it.title}" data-day="${toISODate(it.start)}" data-time="${it.extendedProps.time||''}" data-link="${it.extendedProps.link||''}" data-user="${it.extendedProps.user_id||''}" data-duration="${it.extendedProps.duration_minutes||''}" data-group="${it.extendedProps.group_name||''}">Редактировать</button>`
               : '';
-            return `<li><span class="pill pill-${src.toLowerCase()}">${src}</span> ${time} — ${it.title} ${linkBtn} ${editBtn}</li>`;
+            const duration = it.extendedProps.duration_minutes ? ` · ${it.extendedProps.duration_minutes} мин` : '';
+            const group = it.extendedProps.group_name ? ` · ${it.extendedProps.group_name}` : '';
+            return `<li><span class="pill pill-${src.toLowerCase()}">${src}</span> ${time}${duration}${group} — ${it.title} ${linkBtn} ${editBtn}</li>`;
           }).join('')
         : `<li>Нет событий на ${day}</li>`);
       if (onSelectSchedule){
@@ -108,7 +119,9 @@ export async function renderCalendar({ scheduleRows=[], error=null, onSelectSche
               day: btn.dataset.day,
               time: btn.dataset.time,
               meet_link: btn.dataset.link,
-              user_id: btn.dataset.user
+              user_id: btn.dataset.user,
+              duration_minutes: btn.dataset.duration,
+              group_name: btn.dataset.group
             });
           });
         });
