@@ -18,7 +18,10 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
   $('#event-student-id').value = getUserId(); // подставляем себя по умолчанию
 
   $('#event-submit-btn')?.addEventListener('click', async ()=>{
-    const user_id = Number($('#event-student-id').value.trim() || getUserId());
+    const idsRaw = $('#event-student-id').value.trim();
+    const ids = idsRaw
+      ? idsRaw.split(',').map(x=>x.trim()).filter(Boolean).map(x=>Number(x) || x)
+      : [getUserId()];
     const subject = $('#event-subject').value.trim();
     const dayInput = $('#event-date').value;
     const isoDay = dayInput ? new Date(dayInput).toISOString().slice(0,10) : '';
@@ -28,7 +31,7 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
     const duration_minutes = Number($('#event-duration').value || 60);
     const group_name = $('#event-group').value.trim() || null;
 
-    if (!user_id || !subject || !isoDay || !time){
+    if (!ids.length || !subject || !isoDay || !time){
       showToast('Заполните ID, тему, дату и время', 'warn');
       return;
     }
@@ -39,10 +42,28 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
         if (!idNum){
           throw new Error('Не выбран слот для редактирования');
         }
-        await updateSchedule(idNum, { user_id, subject, day: isoDay, time, meet_link, duration_minutes, group_name });
+        await updateSchedule(idNum, {
+          user_id: ids[0],
+          subject,
+          day: isoDay,
+          time,
+          meet_link,
+          duration_minutes,
+          group_name
+        });
         showToast('Событие обновлено', 'info');
       }else{
-        await createScheduleBatch({ user_id, subject, day: isoDay, time, meet_link, repeatWeeks, duration_minutes, group_name });
+        await createScheduleBatch({
+          user_id: ids[0],
+          subject,
+          day: isoDay,
+          time,
+          meet_link,
+          repeatWeeks,
+          duration_minutes,
+          group_name,
+          user_ids: ids
+        });
         showToast('Событие добавлено', 'info');
       }
       resetForm(getUserId());

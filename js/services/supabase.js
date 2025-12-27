@@ -75,15 +75,18 @@ export async function createSchedule({ user_id, subject, day, time, meet_link })
   return data;
 }
 
-export async function createScheduleBatch({ user_id, subject, day, time, meet_link, repeatWeeks = 0, duration_minutes, group_name }){
+export async function createScheduleBatch({ user_id, subject, day, time, meet_link, repeatWeeks = 0, duration_minutes, group_name, user_ids=null }){
   requireSupabase();
   const baseDate = new Date(day);
   const rows = [];
-  for (let i=0; i<=repeatWeeks; i++){
-    const d = new Date(baseDate);
-    d.setDate(d.getDate() + i*7);
-    const iso = d.toISOString().slice(0,10);
-    rows.push({ user_id, subject, day: iso, time, meet_link, duration_minutes, group_name });
+  const idsToUse = user_ids && Array.isArray(user_ids) ? user_ids : [user_id];
+  for (let id of idsToUse){
+    for (let i=0; i<=repeatWeeks; i++){
+      const d = new Date(baseDate);
+      d.setDate(d.getDate() + i*7);
+      const iso = d.toISOString().slice(0,10);
+      rows.push({ user_id:id, subject, day: iso, time, meet_link, duration_minutes, group_name });
+    }
   }
   const { data, error } = await supabase.from('schedule').insert(rows).select();
   if (error) throw error;
