@@ -33,7 +33,11 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
     $('#event-submit-btn').disabled = true;
     try{
       if (currentId){
-        await updateSchedule(currentId, { user_id, subject, day: isoDay, time, meet_link });
+        const idNum = Number(currentId);
+        if (!idNum){
+          throw new Error('Не выбран слот для редактирования');
+        }
+        await updateSchedule(idNum, { user_id, subject, day: isoDay, time, meet_link });
         showToast('Событие обновлено', 'info');
       }else{
         await createScheduleBatch({ user_id, subject, day: isoDay, time, meet_link, repeatWeeks });

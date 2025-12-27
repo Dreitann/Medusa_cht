@@ -92,7 +92,12 @@ export async function createScheduleBatch({ user_id, subject, day, time, meet_li
 
 export async function updateSchedule(id, payload){
   requireSupabase();
-  const { data, error } = await supabase.from('schedule').update(payload).eq('id', id).select().single();
+  const { data, error } = await supabase
+    .from('schedule')
+    .update(payload)
+    .eq('id', id)
+    .select()
+    .maybeSingle();
   if (error) throw error;
   return data;
 }
