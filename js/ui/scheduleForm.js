@@ -79,6 +79,10 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
       showToast('Заполните тему, дату и время', 'warn');
       return;
     }
+    if (!resolvedStudentIds.length && !group_id){
+      showToast('Укажите ученика или выберите группу', 'warn');
+      return;
+    }
 
     $('#event-submit-btn').disabled = true;
     try{

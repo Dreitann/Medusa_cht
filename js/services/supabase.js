@@ -79,7 +79,7 @@ export async function createScheduleBatch({ user_id, subject, day, time, meet_li
   requireSupabase();
   const baseDate = new Date(day);
   const rows = [];
-  const idsToUse = user_ids && Array.isArray(user_ids) ? user_ids : [user_id];
+  const idsToUse = (user_ids && Array.isArray(user_ids) && user_ids.length) ? user_ids : [user_id];
   const studentsToUse = student_ids && Array.isArray(student_ids) ? student_ids : [];
   for (let id of idsToUse){
     for (let i=0; i<=repeatWeeks; i++){
