@@ -35,6 +35,12 @@ jobs:
           };
           EOF
 
+      - name: Verify env.js exists
+        run: |
+          set -e
+          ls -l env.js
+          head -n 5 env.js
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
