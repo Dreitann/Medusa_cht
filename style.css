@@ -122,9 +122,13 @@ body{
   box-shadow:none;
 }
 
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;min-width:0;}
 .field input[type="text"],
-.field input[type="file"]{
+.field input[type="file"],
+.field input[type="number"],
+.field input[type="time"],
+.field input[type="date"],
+.field select{
   width:100%;
   background:rgba(255,255,255,0.03);
   border:1px solid var(--border);
@@ -133,7 +137,7 @@ body{
   color:var(--fg);
 }
 .field input[type="file"]{padding:12px;}
-.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;}
 
 .button-row{display:flex;gap:8px;flex-wrap:wrap}
 

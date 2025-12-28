@@ -43,6 +43,7 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
       const match = students.find(s=>n.includes(String(s.id)) || n.toLowerCase().startsWith(s.name.toLowerCase()));
       return match ? match.id : null;
     }).filter(Boolean);
+    $('#event-student-ids').value = resolvedStudentIds.length ? resolvedStudentIds.join(', ') : '—';
 
     const subject = $('#event-subject').value.trim();
     const dayInput = $('#event-date').value;
@@ -148,6 +149,7 @@ function resetForm(){
   currentId = null;
   $('#event-id').value = '';
   $('#event-student-name').value = '';
+  $('#event-student-ids').value = '—';
   $('#event-subject').value = '';
   $('#event-date').value = '';
   $('#event-time').value = '';
@@ -165,6 +167,7 @@ export function selectScheduleForEdit(ev){
   $('#event-id').value = currentId || '';
   const foundStudent = students.find(s=>String(s.id) === String(ev?.student_id || ev?.user_id));
   $('#event-student-name').value = foundStudent ? `${foundStudent.name} (ID: ${foundStudent.id})` : '';
+  $('#event-student-ids').value = foundStudent ? foundStudent.id : '—';
   $('#event-subject').value = ev?.subject || '';
   $('#event-date').value = ev?.day || '';
   $('#event-time').value = ev?.time || '';

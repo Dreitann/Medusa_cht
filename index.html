@@ -68,12 +68,18 @@
           <div class="card-title">➕ Добавить событие ученику</div>
           <div class="grid-2">
             <input type="hidden" id="event-id">
+
             <label class="field">
               <span class="muted small">Ученик (по имени)</span>
               <input type="text" id="event-student-name" list="students-list" placeholder="Начните вводить имя" autocomplete="off">
               <datalist id="students-list"></datalist>
               <span class="muted tiny">Можно ввести несколько через запятую; событие создастся для каждого.</span>
             </label>
+            <label class="field">
+              <span class="muted small">Найденные ID</span>
+              <input type="text" id="event-student-ids" readonly placeholder="—">
+            </label>
+
             <label class="field">
               <span class="muted small">Группа</span>
               <select id="event-group-select">
@@ -84,6 +90,7 @@
               <span class="muted small">Тема</span>
               <input type="text" id="event-subject" placeholder="Например: Математика">
             </label>
+
             <label class="field">
               <span class="muted small">Дата</span>
               <input type="date" id="event-date">
@@ -92,10 +99,7 @@
               <span class="muted small">Время</span>
               <input type="time" id="event-time">
             </label>
-            <label class="field" style="grid-column:1/3;">
-              <span class="muted small">Ссылка на встречу (опционально)</span>
-              <input type="url" id="event-link" placeholder="https://meet...">
-            </label>
+
             <label class="field">
               <span class="muted small">Повторять каждую неделю (кол-во доп. недель)</span>
               <input type="number" min="0" max="20" id="event-repeat" value="0">
@@ -104,9 +108,14 @@
               <span class="muted small">Длительность, мин</span>
               <input type="number" min="10" max="300" id="event-duration" value="60">
             </label>
-            <label class="field">
+
+            <label class="field" style="grid-column:1/2;">
               <span class="muted small">Группа/класс (опционально)</span>
               <input type="text" id="event-group" placeholder="Например: 7А или Группа 3">
+            </label>
+            <label class="field" style="grid-column:1/3;">
+              <span class="muted small">Ссылка на встречу (опционально)</span>
+              <input type="url" id="event-link" placeholder="https://meet...">
             </label>
           </div>
           <div class="button-row">
