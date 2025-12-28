@@ -1,10 +1,10 @@
-# Telegram Student WebApp (Supabase
+# Telegram Student WebApp (Supabase)
 
 ## 🔧 Setup Steps
 
 1. Deploy `index.html` to GitHub Pages
 2. In Supabase:
-   - Go to SQL Editor → Paste contents of `schema.sql` (обновлено: расписание с `meet_link`, таблица `videos`, политики чтения домашек)
+   - Go to SQL Editor → Paste contents of `schema.sql` (обновлено: `groups`, `students`, расширенное расписание с duration/group)
    - Create bucket "homework" in Storage (public)
    - Create bucket "videos" in Storage (public)
 3. Done! It will:

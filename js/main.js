@@ -5,12 +5,12 @@ import { renderCalendar } from './ui/calendarView.js';
 import { initHomeworkUI, renderHomework } from './ui/homeworkView.js';
 import { initVideoUI, renderVideos } from './ui/videoView.js';
 import { initJitsi } from './ui/jitsiView.js';
-import { fetchSchedule, ensureUserExists, fetchUserProfile } from './services/supabase.js';
+import { fetchSchedule, ensureUserExists, fetchUserProfile, fetchGroups, fetchStudents } from './services/supabase.js';
 import { SUPABASE_URL, SUPABASE_KEY, TEACHER_IDS } from './config.js';
 import { setStatus } from './ui/status.js';
 import { showToast } from './ui/toast.js';
 import * as gcal from './services/googleCalendar.js';
-import { toggleScheduleForm, selectScheduleForEdit } from './ui/scheduleForm.js';
+import { toggleScheduleForm, selectScheduleForEdit, setDirectories } from './ui/scheduleForm.js';
 
 Telegram.WebApp.ready();
 const tgUser = Telegram.WebApp.initDataUnsafe?.user || {};
@@ -21,6 +21,8 @@ setText(document.getElementById('student-id'), tgUser.id ? String(tgUser.id) : '
 
 let scheduleRows = [];
 let scheduleError = null;
+let studentDirectory = [];
+let groupDirectory = [];
 
 setStatus('supabase', { state:'idle', text:'Ожидание' });
 setStatus('google', { state:'warn', text:'Войти' });
@@ -106,6 +108,15 @@ async function boot(){
   }
 
   if (!hasRole) return;
+  if (isTeacher){
+    try{
+      groupDirectory = await fetchGroups();
+      studentDirectory = await fetchStudents();
+      setDirectories({ studentList: studentDirectory, groupList: groupDirectory });
+    }catch(e){
+      console.warn('Не удалось загрузить справочники', e);
+    }
+  }
   runApp();
 }
 
@@ -186,5 +197,5 @@ gcal.onSigninChange(async signed=>{
 document.getElementById('btn-next')?.click();
 
 function onScheduleSelect(ev){
-  selectScheduleForEdit(ev, ()=>userId);
+  selectScheduleForEdit(ev);
 }

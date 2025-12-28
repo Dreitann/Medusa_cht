@@ -19,8 +19,10 @@ function mapScheduleToEvents(rows){
         provider: 'schedule',
         time: clean(r.time),
         user_id: r.user_id,
+        student_id: r.student_id,
         duration_minutes: r.duration_minutes,
-        group_name: r.group_name
+        group_name: r.group_name || r.groups?.name || null,
+        student_name: r.students?.name || null
       }
     };
   }).filter(Boolean);
@@ -103,11 +105,12 @@ export async function renderCalendar({ scheduleRows=[], error=null, onSelectSche
               || (!Number.isNaN(parsed.getTime()) ? parsed.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) : '');
             const linkBtn = it.extendedProps.link ? `<a class="btn ghost" style="margin-left:8px;" href="${it.extendedProps.link}" target="_blank">Ссылка</a>` : '';
             const editBtn = onSelectSchedule && it.extendedProps.provider === 'schedule'
-              ? `<button class="btn tiny ghost event-edit" data-id="${it.id||''}" data-subject="${it.title}" data-day="${toISODate(it.start)}" data-time="${it.extendedProps.time||''}" data-link="${it.extendedProps.link||''}" data-user="${it.extendedProps.user_id||''}" data-duration="${it.extendedProps.duration_minutes||''}" data-group="${it.extendedProps.group_name||''}">Редактировать</button>`
+              ? `<button class="btn tiny ghost event-edit" data-id="${it.id||''}" data-subject="${it.title}" data-day="${toISODate(it.start)}" data-time="${it.extendedProps.time||''}" data-link="${it.extendedProps.link||''}" data-user="${it.extendedProps.student_id||it.extendedProps.user_id||''}" data-duration="${it.extendedProps.duration_minutes||''}" data-group="${it.extendedProps.group_name||''}">Редактировать</button>`
               : '';
             const duration = it.extendedProps.duration_minutes ? ` · ${it.extendedProps.duration_minutes} мин` : '';
             const group = it.extendedProps.group_name ? ` · ${it.extendedProps.group_name}` : '';
-            return `<li><span class="pill pill-${src.toLowerCase()}">${src}</span> ${time}${duration}${group} — ${it.title} ${linkBtn} ${editBtn}</li>`;
+            const student = it.extendedProps.student_name ? ` · ${it.extendedProps.student_name}` : '';
+            return `<li><span class="pill pill-${src.toLowerCase()}">${src}</span> ${time}${duration}${group}${student} — ${it.title} ${linkBtn} ${editBtn}</li>`;
           }).join('')
         : `<li>Нет событий на ${day}</li>`);
       if (onSelectSchedule){

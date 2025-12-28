@@ -69,9 +69,16 @@
           <div class="grid-2">
             <input type="hidden" id="event-id">
             <label class="field">
-              <span class="muted small">ID ученика/группы (через запятую)</span>
-              <input type="text" id="event-student-id" placeholder="Например: 12345,67890">
-              <span class="muted tiny">Можно указать несколько ID, событие создастся для каждого.</span>
+              <span class="muted small">Ученик (по имени)</span>
+              <input type="text" id="event-student-name" list="students-list" placeholder="Начните вводить имя" autocomplete="off">
+              <datalist id="students-list"></datalist>
+              <span class="muted tiny">Можно ввести несколько через запятую; событие создастся для каждого.</span>
+            </label>
+            <label class="field">
+              <span class="muted small">Группа</span>
+              <select id="event-group-select">
+                <option value="">Без группы</option>
+              </select>
             </label>
             <label class="field">
               <span class="muted small">Тема</span>

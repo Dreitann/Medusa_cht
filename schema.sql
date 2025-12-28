@@ -1,14 +1,29 @@
--- users
-create table users (
+-- users (Telegram auth)
+create table if not exists users (
   id bigint primary key,
   first_name text,
   role text
 );
 
+-- groups (для занятий)
+create table if not exists groups (
+  id serial primary key,
+  name text not null
+);
+
+-- students (привязка Telegram id к группе)
+create table if not exists students (
+  id bigint primary key,
+  name text,
+  group_id int references groups(id)
+);
+
 -- schedule
-create table schedule (
+create table if not exists schedule (
   id serial primary key,
   user_id bigint references users(id),
+  student_id bigint references students(id),
+  group_id int references groups(id),
   subject text,
   day text,
   time text,
@@ -18,7 +33,7 @@ create table schedule (
 );
 
 -- homework
-create table homework (
+create table if not exists homework (
   id serial primary key,
   user_id bigint references users(id),
   filename text,
@@ -27,7 +42,7 @@ create table homework (
 );
 
 -- videos
-create table videos (
+create table if not exists videos (
   id serial primary key,
   title text,
   file_path text,
@@ -40,10 +55,18 @@ alter table schedule enable row level security;
 alter table homework enable row level security;
 alter table videos enable row level security;
 
+create policy "Allow read" on groups for select using (true);
+create policy "Allow insert" on groups for insert with check (true);
+
+create policy "Allow read" on students for select using (true);
+create policy "Allow insert" on students for insert with check (true);
+create policy "Allow update" on students for update using (true);
+
 create policy "Allow read" on users for select using (true);
 create policy "Allow upsert" on users for insert with check (true);
 create policy "Allow read" on schedule for select using (true);
 create policy "Allow insert" on schedule for insert with check (true);
+create policy "Allow update" on schedule for update using (true);
 create policy "Allow insert" on homework for insert with check (true);
 create policy "Allow read" on homework for select using (true);
 create policy "Allow read" on videos for select using (true);

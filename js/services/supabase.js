@@ -56,7 +56,7 @@ export async function fetchSchedule(userId){
   requireSupabase();
   const { data, error } = await supabase
     .from('schedule')
-    .select('*')
+    .select('*, students(name), groups(name)')
     .or(`user_id.eq.${userId},user_id.is.null`)
     .order('day', { ascending:true })
     .order('time', { ascending:true });
@@ -64,28 +64,37 @@ export async function fetchSchedule(userId){
   return data || [];
 }
 
-export async function createSchedule({ user_id, subject, day, time, meet_link }){
+export async function createSchedule({ user_id, subject, day, time, meet_link, duration_minutes, group_id, student_id, group_name }){
   requireSupabase();
   const { data, error } = await supabase
     .from('schedule')
-    .insert([{ user_id, subject, day, time, meet_link }])
+    .insert([{ user_id, subject, day, time, meet_link, duration_minutes, group_id, student_id, group_name }])
     .select()
     .single();
   if (error) throw error;
   return data;
 }
 
-export async function createScheduleBatch({ user_id, subject, day, time, meet_link, repeatWeeks = 0, duration_minutes, group_name, user_ids=null }){
+export async function createScheduleBatch({ user_id, subject, day, time, meet_link, repeatWeeks = 0, duration_minutes, group_name, user_ids=null, student_ids=null, group_id=null }){
   requireSupabase();
   const baseDate = new Date(day);
   const rows = [];
   const idsToUse = user_ids && Array.isArray(user_ids) ? user_ids : [user_id];
+  const studentsToUse = student_ids && Array.isArray(student_ids) ? student_ids : [];
   for (let id of idsToUse){
     for (let i=0; i<=repeatWeeks; i++){
       const d = new Date(baseDate);
       d.setDate(d.getDate() + i*7);
       const iso = d.toISOString().slice(0,10);
-      rows.push({ user_id:id, subject, day: iso, time, meet_link, duration_minutes, group_name });
+      rows.push({ user_id:id, subject, day: iso, time, meet_link, duration_minutes, group_name, group_id });
+    }
+  }
+  for (let sid of studentsToUse){
+    for (let i=0; i<=repeatWeeks; i++){
+      const d = new Date(baseDate);
+      d.setDate(d.getDate() + i*7);
+      const iso = d.toISOString().slice(0,10);
+      rows.push({ student_id: sid, subject, day: iso, time, meet_link, duration_minutes, group_name, group_id });
     }
   }
   const { data, error } = await supabase.from('schedule').insert(rows).select();
@@ -109,6 +118,35 @@ export async function deleteSchedule(id){
   requireSupabase();
   const { error } = await supabase.from('schedule').delete().eq('id', id);
   if (error) throw error;
+}
+
+// --- Справочники ---
+export async function fetchGroups(){
+  requireSupabase();
+  const { data, error } = await supabase.from('groups').select('*').order('name');
+  if (error) throw error;
+  return data||[];
+}
+
+export async function createOrUpdateGroup(group){
+  requireSupabase();
+  const { data, error } = await supabase.from('groups').upsert([group]).select().maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function fetchStudents(){
+  requireSupabase();
+  const { data, error } = await supabase.from('students').select('*, groups(name)').order('name');
+  if (error) throw error;
+  return data||[];
+}
+
+export async function createOrUpdateStudent(student){
+  requireSupabase();
+  const { data, error } = await supabase.from('students').upsert([student]).select().maybeSingle();
+  if (error) throw error;
+  return data;
 }
 
 // --- Домашка ---
