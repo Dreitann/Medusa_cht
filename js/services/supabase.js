@@ -137,7 +137,7 @@ export async function createOrUpdateGroup(group){
 
 export async function fetchStudents(){
   requireSupabase();
-  const { data, error } = await supabase.from('students').select('*, groups(name)').order('name');
+  const { data, error } = await supabase.from('students').select('*').order('name');
   if (error) throw error;
   return data||[];
 }

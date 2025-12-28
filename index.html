@@ -113,6 +113,34 @@
             <button class="btn full" id="event-submit-btn">Создать событие</button>
             <button class="btn ghost full" id="event-delete-btn" style="display:none;">Удалить</button>
           </div>
+
+          <div class="card subcard" id="directory-card">
+            <div class="card-title">Справочник: группы и ученики</div>
+            <div class="grid-2">
+              <label class="field">
+                <span class="muted small">Название группы</span>
+                <input type="text" id="group-name-input" placeholder="Например: Группа 1">
+              </label>
+              <div class="button-row">
+                <button class="btn ghost full" id="group-create-btn">Создать/обновить группу</button>
+              </div>
+              <label class="field">
+                <span class="muted small">Имя ученика</span>
+                <input type="text" id="student-name-input" placeholder="Имя ученика">
+              </label>
+              <label class="field">
+                <span class="muted small">Telegram ID ученика</span>
+                <input type="number" id="student-id-input" placeholder="Например: 123456789">
+              </label>
+              <label class="field">
+                <span class="muted small">Группа ученика</span>
+                <select id="student-group-select"><option value="">Без группы</option></select>
+              </label>
+              <div class="button-row">
+                <button class="btn ghost full" id="student-create-btn">Создать/обновить ученика</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div id="calendar"></div>

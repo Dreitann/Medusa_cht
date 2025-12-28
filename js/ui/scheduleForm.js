@@ -1,5 +1,11 @@
 import { $ } from '../utils/dom.js';
-import { createScheduleBatch, updateSchedule, deleteSchedule } from '../services/supabase.js';
+import {
+  createScheduleBatch,
+  updateSchedule,
+  deleteSchedule,
+  createOrUpdateGroup,
+  createOrUpdateStudent
+} from '../services/supabase.js';
 import { showToast } from './toast.js';
 
 let currentId = null;
@@ -16,6 +22,10 @@ export function setDirectories({ studentList=[], groupList=[] }){
   const gs = $('#event-group-select');
   if (gs){
     gs.innerHTML = `<option value="">Без группы</option>` + groups.map(g=>`<option value="${g.id}">${g.name}</option>`).join('');
+  }
+  const sg = $('#student-group-select');
+  if (sg){
+    sg.innerHTML = `<option value="">Без группы</option>` + groups.map(g=>`<option value="${g.id}">${g.name}</option>`).join('');
   }
 }
 
@@ -101,6 +111,35 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
       if (typeof refreshCalendar === 'function') await refreshCalendar();
     }catch(e){
       showToast('Не удалось удалить событие: '+e.message, 'error');
+    }
+  });
+
+  $('#group-create-btn')?.addEventListener('click', async ()=>{
+    const name = $('#group-name-input').value.trim();
+    if (!name) return showToast('Введите название группы', 'warn');
+    try{
+      const saved = await createOrUpdateGroup({ name });
+      showToast('Группа сохранена', 'info');
+      if (saved) groups.push(saved);
+      setDirectories({ studentList: students, groupList: groups });
+    }catch(e){
+      showToast('Не удалось сохранить группу: '+e.message, 'error');
+    }
+  });
+
+  $('#student-create-btn')?.addEventListener('click', async ()=>{
+    const name = $('#student-name-input').value.trim();
+    const id = Number($('#student-id-input').value);
+    const group_id = $('#student-group-select').value || null;
+    if (!id || !name) return showToast('Введите имя и Telegram ID ученика', 'warn');
+    try{
+      const saved = await createOrUpdateStudent({ id, name, group_id });
+      showToast('Ученик сохранён', 'info');
+      const idx = students.findIndex(s=>String(s.id)===String(saved.id));
+      if (idx>=0) students[idx]=saved; else students.push(saved);
+      setDirectories({ studentList: students, groupList: groups });
+    }catch(e){
+      showToast('Не удалось сохранить ученика: '+e.message, 'error');
     }
   });
 }
