@@ -21,8 +21,8 @@ function mapScheduleToEvents(rows){
         user_id: r.user_id,
         student_id: r.student_id,
         duration_minutes: r.duration_minutes,
-        group_name: r.group_name || r.groups?.name || null,
-        student_name: r.students?.name || null
+        group_name: r.group_name || null,
+        student_name: null
       }
     };
   }).filter(Boolean);

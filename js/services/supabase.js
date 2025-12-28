@@ -56,7 +56,7 @@ export async function fetchSchedule(userId){
   requireSupabase();
   const { data, error } = await supabase
     .from('schedule')
-    .select('*, students(name), groups(name)')
+    .select('*')
     .or(`user_id.eq.${userId},user_id.is.null`)
     .order('day', { ascending:true })
     .order('time', { ascending:true });
