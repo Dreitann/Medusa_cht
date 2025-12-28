@@ -12,6 +12,25 @@ let currentId = null;
 let students = [];
 let groups = [];
 
+function resolveStudentIds(inputValue){
+  const tokens = (inputValue || '').split(',').map(t=>t.trim()).filter(Boolean);
+  const ids = [];
+  tokens.forEach(tok=>{
+    if (!tok) return;
+    const num = Number(tok);
+    if (!Number.isNaN(num)) {
+      ids.push(num);
+      return;
+    }
+    const match = students.find(s =>
+      tok.toLowerCase().includes(String(s.id)) ||
+      s.name?.toLowerCase().includes(tok.toLowerCase())
+    );
+    if (match) ids.push(match.id);
+  });
+  return ids;
+}
+
 export function setDirectories({ studentList=[], groupList=[] }){
   students = studentList;
   groups = groupList;
@@ -36,13 +55,13 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
   if (card.dataset.bound) return;
   card.dataset.bound = '1';
 
+  $('#event-student-name')?.addEventListener('input', ()=>{
+    const resolved = resolveStudentIds($('#event-student-name').value);
+    $('#event-student-ids').value = resolved.length ? resolved.join(', ') : '—';
+  });
+
   $('#event-submit-btn')?.addEventListener('click', async ()=>{
-    const namesRaw = $('#event-student-name').value.trim();
-    const nameItems = namesRaw ? namesRaw.split(',').map(x=>x.trim()).filter(Boolean) : [];
-    const resolvedStudentIds = nameItems.map(n=>{
-      const match = students.find(s=>n.includes(String(s.id)) || n.toLowerCase().startsWith(s.name.toLowerCase()));
-      return match ? match.id : null;
-    }).filter(Boolean);
+    const resolvedStudentIds = resolveStudentIds($('#event-student-name').value);
     $('#event-student-ids').value = resolvedStudentIds.length ? resolvedStudentIds.join(', ') : '—';
 
     const subject = $('#event-subject').value.trim();
