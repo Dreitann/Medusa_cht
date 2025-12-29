@@ -121,6 +121,14 @@ body{
   border-radius:8px;
   box-shadow:none;
 }
+.event-action{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:32px;
+  gap:6px;
+  margin-left:6px;
+}
 
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;min-width:0;}
 .field input[type="text"],
@@ -243,6 +251,8 @@ body{
 .fc .fc-daygrid-day-number{color:var(--fg);}
 .fc-daygrid-day-frame{cursor:pointer;}
 .fc .fc-button-primary{background:rgba(125,211,252,0.2);border:none;}
+.fc .fc-button-primary, .fc .fc-button-primary:not(:disabled){height:38px;min-width:46px;padding:6px 10px;}
+.fc .fc-toolbar-chunk{display:flex;align-items:center;gap:6px;}
 .fc-theme-standard td, .fc-theme-standard th{border:1px solid var(--border);}
 
 .pill{
