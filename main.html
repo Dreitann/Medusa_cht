@@ -1,0 +1,870 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Репетиторский центр «Пульс знаний»</title>
+  <meta name="description" content="Репетиторский центр: математика, английский, подготовка к ОГЭ/ЕГЭ. Онлайн и офлайн. Диагностика, план, прогресс." />
+  <style>
+    :root{
+      --bg: #0b0f14;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.08);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --line: rgba(255,255,255,.10);
+      --brand: #66e3b4;
+      --brand2:#4cc2ff;
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+      --r: 18px;
+      --max: 1120px;
+    }
+
+    *{ box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(102,227,180,.18), transparent 60%),
+        radial-gradient(900px 500px at 90% 20%, rgba(76,194,255,.18), transparent 55%),
+        radial-gradient(800px 600px at 40% 110%, rgba(102,227,180,.10), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    .container{ width: min(var(--max), calc(100% - 40px)); margin:0 auto; }
+
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(14px);
+      background: rgba(11,15,20,.55);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+      gap:16px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .logo{
+      width:34px; height:34px; border-radius:12px;
+      background:
+        radial-gradient(12px 12px at 30% 30%, rgba(255,255,255,.35), transparent 60%),
+        linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow: 0 10px 30px rgba(102,227,180,.18);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .navlinks{
+      display:flex; align-items:center; gap:16px;
+    }
+    .navlinks a{
+      padding:9px 10px;
+      border-radius:12px;
+      color:var(--muted);
+    }
+    .navlinks a:hover{ background: var(--panel); color:var(--text); }
+    .cta{
+      display:flex; align-items:center; gap:10px;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      cursor:pointer;
+      user-select:none;
+      font-weight:600;
+    }
+    .btn:hover{ background: rgba(255,255,255,.09); }
+    .btn.primary{
+      border-color: rgba(102,227,180,.55);
+      background: linear-gradient(135deg, rgba(102,227,180,.18), rgba(76,194,255,.12));
+    }
+    .btn.primary:hover{
+      background: linear-gradient(135deg, rgba(102,227,180,.24), rgba(76,194,255,.16));
+    }
+    .burger{
+      display:none;
+      width:44px; height:44px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      cursor:pointer;
+    }
+    .burger span{
+      display:block;
+      width:18px; height:2px;
+      background: rgba(255,255,255,.85);
+      margin: 0 auto;
+      border-radius:2px;
+    }
+    .burger span + span{ margin-top:5px; }
+
+    /* Mobile menu */
+    .mobile{
+      display:none;
+      padding: 0 0 16px;
+    }
+    .mobile a{
+      display:block;
+      padding:12px 12px;
+      border-radius:14px;
+      color:var(--muted);
+      border: 1px solid transparent;
+    }
+    .mobile a:hover{
+      background: var(--panel);
+      border-color: rgba(255,255,255,.10);
+      color:var(--text);
+    }
+
+    /* Hero */
+    .hero{
+      padding: 56px 0 26px;
+    }
+    .grid-hero{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 24px;
+      align-items:stretch;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--muted);
+      font-weight:600;
+      width:fit-content;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: var(--brand);
+      box-shadow: 0 0 0 4px rgba(102,227,180,.12);
+    }
+    h1{
+      font-size: clamp(28px, 3.2vw, 46px);
+      line-height:1.08;
+      margin:14px 0 12px;
+      letter-spacing:-.6px;
+    }
+    .lead{
+      color:var(--muted);
+      font-size: 16px;
+      margin: 0 0 18px;
+      max-width: 56ch;
+    }
+    .hero-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin: 18px 0 0;
+    }
+    .mini{
+      display:flex; gap:12px; flex-wrap:wrap;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .mini .chip{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+    }
+    .panel{
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+    }
+    .hero-card{
+      padding: 18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .hero-card h3{
+      margin:0;
+      font-size: 15px;
+      color: rgba(255,255,255,.86);
+    }
+    .kpis{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 2px;
+    }
+    .kpi{
+      padding:12px;
+      border-radius:14px;
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .kpi strong{
+      display:block;
+      font-size: 18px;
+      letter-spacing:-.2px;
+    }
+    .kpi span{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .note{
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,.20);
+      color:var(--muted);
+      font-size: 13px;
+    }
+    .line{ height:1px; background: var(--line); margin: 2px 0; }
+
+    /* Sections */
+    section{ padding: 34px 0; }
+    .section-head{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .section-head h2{
+      margin:0;
+      font-size: 22px;
+      letter-spacing:-.2px;
+    }
+    .section-head p{
+      margin:0;
+      color:var(--muted);
+      max-width: 64ch;
+      font-size: 14px;
+    }
+
+    /* Cards grid */
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+    .card{
+      grid-column: span 4;
+      padding: 16px;
+      border-radius: var(--r);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 18px 50px rgba(0,0,0,.25);
+    }
+    .card h3{ margin: 0 0 6px; font-size: 16px; }
+    .card p{ margin: 0; color: var(--muted); font-size: 14px; }
+    .card ul{ margin: 12px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
+    .card li{ margin: 6px 0; }
+
+    /* Teachers */
+    .teacher{
+      display:flex; gap: 12px; align-items:flex-start;
+    }
+    .avatar{
+      width:42px; height:42px; border-radius:16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,.04));
+      position:relative;
+      flex:0 0 auto;
+    }
+    .avatar::after{
+      content:"";
+      position:absolute; inset: 10px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(102,227,180,.35), rgba(76,194,255,.22));
+    }
+    .teacher small{ display:block; color: var(--muted); margin-top: 2px; }
+    .pill{
+      display:inline-flex; align-items:center;
+      padding: 6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 10px;
+      width: fit-content;
+    }
+
+    /* Pricing */
+    .price{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap:10px; margin-top: 10px;
+      padding-top: 10px; border-top: 1px solid rgba(255,255,255,.10);
+    }
+    .price strong{ font-size: 20px; }
+    .price span{ color: var(--muted); font-size: 12px; }
+
+    /* Testimonials */
+    .quote{
+      font-size:14px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    .who{
+      display:flex; justify-content:space-between; gap:10px;
+      margin-top: 12px; padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      color: rgba(255,255,255,.82);
+      font-weight:600;
+      font-size: 13px;
+    }
+    .who span{ color: var(--muted); font-weight:500; }
+
+    /* FAQ */
+    details{
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--r);
+      padding: 12px 14px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.20);
+    }
+    details + details{ margin-top: 10px; }
+    summary{
+      cursor:pointer;
+      list-style:none;
+      font-weight: 650;
+      color: rgba(255,255,255,.90);
+    }
+    summary::-webkit-details-marker{ display:none; }
+    details p{
+      margin:10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Contact */
+    .contact{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items:stretch;
+    }
+    .form{
+      padding: 16px;
+    }
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 10px 0 6px;
+    }
+    input, select, textarea{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      outline: none;
+    }
+    textarea{ min-height: 108px; resize: vertical; }
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(102,227,180,.55);
+      box-shadow: 0 0 0 4px rgba(102,227,180,.12);
+    }
+    .hint{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    footer{
+      padding: 26px 0 40px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      background: rgba(0,0,0,.12);
+    }
+    .footer-grid{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .footer-grid a{ color: rgba(255,255,255,.78); }
+    .footer-grid a:hover{ color: var(--text); }
+
+    /* Responsive */
+    @media (max-width: 960px){
+      .grid-hero{ grid-template-columns: 1fr; }
+      .kpis{ grid-template-columns: repeat(3, 1fr); }
+      .card{ grid-column: span 6; }
+      .contact{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px){
+      .navlinks{ display:none; }
+      .burger{ display:inline-flex; align-items:center; justify-content:center; }
+      .mobile{ display:block; }
+      .mobile[hidden]{ display:none; }
+      .card{ grid-column: span 12; }
+      .kpis{ grid-template-columns: 1fr; }
+      .hero{ padding-top: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="nav">
+      <a class="brand" href="#top" aria-label="На главную">
+        <span class="logo" aria-hidden="true"></span>
+        <span>Пульс знаний</span>
+      </a>
+
+      <nav class="navlinks" aria-label="Навигация">
+        <a href="#services">Направления</a>
+        <a href="#how">Как работаем</a>
+        <a href="#teachers">Преподаватели</a>
+        <a href="#pricing">Тарифы</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Контакты</a>
+      </nav>
+
+      <div class="cta">
+        <a class="btn" href="#contact">Задать вопрос</a>
+        <a class="btn primary" href="#contact">Записаться</a>
+        <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <nav class="mobile" id="mobileMenu" hidden aria-label="Мобильная навигация">
+      <a href="#services">Направления</a>
+      <a href="#how">Как работаем</a>
+      <a href="#teachers">Преподаватели</a>
+      <a href="#pricing">Тарифы</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Контакты</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="container">
+      <div class="grid-hero">
+        <div>
+          <div class="badge"><span class="dot" aria-hidden="true"></span>Офлайн и онлайн занятия • 1–11 классы + студенты</div>
+          <h1>Репетиторский центр, где есть план, контроль прогресса и результат.</h1>
+          <p class="lead">
+            Диагностика → индивидуальная программа → занятия → домашние задания → отчёты по прогрессу.
+            Математика, английский, физика, информатика, подготовка к ОГЭ/ЕГЭ и вступительным.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn primary" href="#contact">Бесплатная диагностика</a>
+            <a class="btn" href="#pricing">Посмотреть тарифы</a>
+          </div>
+
+          <div class="mini" aria-label="Преимущества">
+            <span class="chip">Группы до 6 человек</span>
+            <span class="chip">Индивидуальные занятия</span>
+            <span class="chip">Личный кабинет и отчёты</span>
+          </div>
+        </div>
+
+        <aside class="panel hero-card" aria-label="Быстрая информация">
+          <h3>Что вы получаете</h3>
+          <div class="kpis" role="list">
+            <div class="kpi" role="listitem"><strong>7 дней</strong><span>первый план обучения</span></div>
+            <div class="kpi" role="listitem"><strong>1 раз/мес</strong><span>контрольный срез</span></div>
+            <div class="kpi" role="listitem"><strong>24/7</strong><span>материалы и ДЗ</span></div>
+          </div>
+          <div class="line"></div>
+          <div class="note">
+            Формат можно комбинировать: например, 1 индивидуальное занятие в неделю + 1 занятие в мини-группе.
+          </div>
+          <a class="btn primary" href="#contact">Оставить заявку</a>
+          <a class="btn" href="#how">Как устроен процесс</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Направления</h2>
+          <p>Выбери предмет и цель: повышение успеваемости, подготовка к экзаменам или олимпиадам.</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Математика</h3>
+          <p>Алгебра/геометрия, разбор пробелов, системное решение задач.</p>
+          <ul>
+            <li>ОГЭ / ЕГЭ (база и профиль)</li>
+            <li>Контрольные, ВПР, вступительные</li>
+            <li>Логика и техника оформления</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Английский</h3>
+          <p>Грамматика + разговорная практика + навыки экзамена.</p>
+          <ul>
+            <li>Школа и университет</li>
+            <li>ОГЭ / ЕГЭ, PET/FCE при необходимости</li>
+            <li>Словарь и понимание на слух</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Информатика / программирование</h3>
+          <p>От основ до задач уровня экзамена и олимпиадных тем.</p>
+          <ul>
+            <li>ОГЭ / ЕГЭ информатика</li>
+            <li>Python: алгоритмы, практика</li>
+            <li>Разбор типовых ошибок</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Как мы работаем</h2>
+          <p>Прозрачный процесс: от диагностики до отчёта с цифрами и рекомендациями.</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <h3>1) Диагностика</h3>
+          <p>Короткий тест + мини-собеседование. Определяем пробелы и цель на 4–8 недель.</p>
+        </div>
+        <div class="card">
+          <h3>2) План</h3>
+          <p>Составляем программу: темы, навыки, формат занятий, домашние задания, критерии прогресса.</p>
+        </div>
+        <div class="card">
+          <h3>3) Занятия и контроль</h3>
+          <p>Регулярные проверки: мини-квизы, контрольные срезы, корректировка плана.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="teachers">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Преподаватели</h2>
+          <p>Сильная методика + понятные объяснения + дисциплина выполнения ДЗ.</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <div class="teacher">
+            <div class="avatar" aria-hidden="true"></div>
+            <div>
+              <h3>Мария К.</h3>
+              <p>Математика • ОГЭ/ЕГЭ • системная подготовка</p>
+              <small>Фокус: база, оформление, скорость решения</small>
+              <span class="pill">Стаж: 6+ лет</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="teacher">
+            <div class="avatar" aria-hidden="true"></div>
+            <div>
+              <h3>Алексей Н.</h3>
+              <p>Информатика • Python • экзамены и алгоритмы</p>
+              <small>Фокус: типовые задания, разбор ошибок, практика</small>
+              <span class="pill">Стаж: 5+ лет</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="teacher">
+            <div class="avatar" aria-hidden="true"></div>
+            <div>
+              <h3>Екатерина С.</h3>
+              <p>Английский • разговорный • экзамены</p>
+              <small>Фокус: говорение, письмо, грамматика без перегруза</small>
+              <span class="pill">Стаж: 7+ лет</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Тарифы</h2>
+          <p>Цены — пример. Заменишь под свой город/валюту и форматы (онлайн/офлайн).</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Мини-группа</h3>
+          <p>2 занятия в неделю, группа до 6 человек, домашние задания и отчёт.</p>
+          <div class="price">
+            <strong>€79</strong>
+            <span>в месяц</span>
+          </div>
+          <div style="margin-top:12px">
+            <a class="btn primary" href="#contact">Выбрать</a>
+          </div>
+        </div>
+
+        <div class="card" style="border-color: rgba(102,227,180,.35);">
+          <h3>Стандарт</h3>
+          <p>1 индивидуальное + 1 мини-группа в неделю. Баланс темпа и контроля.</p>
+          <div class="price">
+            <strong>€149</strong>
+            <span>в месяц</span>
+          </div>
+          <div style="margin-top:12px">
+            <a class="btn primary" href="#contact">Выбрать</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Индивидуальный</h3>
+          <p>2 индивидуальных занятия в неделю + разбор пробников и стратегия.</p>
+          <div class="price">
+            <strong>€219</strong>
+            <span>в месяц</span>
+          </div>
+          <div style="margin-top:12px">
+            <a class="btn primary" href="#contact">Выбрать</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reviews">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Отзывы</h2>
+          <p>Короткие примеры блоков. Можно заменить на реальные скриншоты/цитаты.</p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Подняли математику за 2 месяца</h3>
+          <p class="quote">«Систематизировали темы и закрыли пробелы. Срезы показывали прогресс, стало спокойнее на контрольных.»</p>
+          <div class="who"><div>Родитель</div><span>8 класс</span></div>
+        </div>
+        <div class="card">
+          <h3>ЕГЭ информатика — выросли баллы</h3>
+          <p class="quote">«Много практики и нормальная обратная связь по ошибкам. Понял, что именно тормозило на заданиях.»</p>
+          <div class="who"><div>Ученик</div><span>11 класс</span></div>
+        </div>
+        <div class="card">
+          <h3>Английский стал понятнее</h3>
+          <p class="quote">«Появилась структура: что учить, как повторять. Плюс говорение — без стресса.»</p>
+          <div class="who"><div>Ученик</div><span>10 класс</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>FAQ</h2>
+          <p>Самые частые вопросы: формат, переносы, отчёты, домашние задания.</p>
+        </div>
+      </div>
+
+      <details>
+        <summary>Онлайн занятия так же эффективны, как офлайн?</summary>
+        <p>Да, если есть регулярность, домашние задания и контроль. Мы даём материалы, фиксируем прогресс и корректируем план.</p>
+      </details>
+
+      <details>
+        <summary>Можно ли поменять преподавателя?</summary>
+        <p>Да. Если ученику не подходит темп/стиль, предложим альтернативу и перенесём программу без потерь.</p>
+      </details>
+
+      <details>
+        <summary>Что если пропустили занятие?</summary>
+        <p>Есть переносы по правилам центра. Мы также отправим материалы и задачу на самостоятельную отработку.</p>
+      </details>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2>Запись и контакты</h2>
+          <p>Оставь заявку — мы уточним цель, уровень и предложим формат занятий.</p>
+        </div>
+      </div>
+
+      <div class="contact">
+        <div class="panel form">
+          <form id="leadForm">
+            <label for="name">Имя</label>
+            <input id="name" name="name" autocomplete="name" placeholder="Например, Анна" required />
+
+            <label for="phone">Телефон или Telegram</label>
+            <input id="phone" name="phone" autocomplete="tel" placeholder="+33 … / @username" required />
+
+            <label for="goal">Цель</label>
+            <select id="goal" name="goal" required>
+              <option value="" disabled selected>Выберите цель</option>
+              <option>Повысить успеваемость</option>
+              <option>Подготовка к ОГЭ</option>
+              <option>Подготовка к ЕГЭ</option>
+              <option>Вступительные / экзамен</option>
+              <option>Олимпиадная подготовка</option>
+            </select>
+
+            <label for="msg">Комментарий</label>
+            <textarea id="msg" name="msg" placeholder="Предмет, класс/курс, удобные дни и формат (онлайн/офлайн)"></textarea>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+              <button class="btn primary" type="submit">Отправить заявку</button>
+              <a class="btn" href="#pricing">Сначала тарифы</a>
+            </div>
+
+            <div class="hint" id="formHint">
+              Нажимая «Отправить», вы соглашаетесь на связь по указанным контактам.
+            </div>
+          </form>
+        </div>
+
+        <div class="panel" style="padding:16px;">
+          <h3 style="margin:0 0 8px;">Контакты</h3>
+          <p style="margin:0; color:var(--muted); font-size:14px;">
+            Адрес: <span style="color:rgba(255,255,255,.85)">укажите ваш адрес</span><br/>
+            Телефон: <span style="color:rgba(255,255,255,.85)">+33 …</span><br/>
+            Telegram: <span style="color:rgba(255,255,255,.85)">@your_center</span><br/>
+            Время работы: <span style="color:rgba(255,255,255,.85)">Пн–Сб 10:00–20:00</span>
+          </p>
+
+          <div class="line" style="margin:14px 0;"></div>
+
+          <h3 style="margin:0 0 8px;">Формат</h3>
+          <p style="margin:0; color:var(--muted); font-size:14px;">
+            Онлайн: Zoom/Meet + интерактивная доска.<br/>
+            Офлайн: мини-группы и индивидуальные занятия.
+          </p>
+
+          <div class="line" style="margin:14px 0;"></div>
+
+          <h3 style="margin:0 0 8px;">Документы</h3>
+          <p style="margin:0; color:var(--muted); font-size:14px;">
+            Договор, чек/квитанция (по вашему формату работы), правила переносов.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; font-weight:700; color:rgba(255,255,255,.86);">
+          <span class="logo" aria-hidden="true"></span>
+          <span>Пульс знаний</span>
+        </div>
+        <div style="margin-top:10px; max-width: 62ch;">
+          Репетиторский центр: диагностика, план, регулярность, отчёты. Замените текст на ваш реальный бренд и условия.
+        </div>
+      </div>
+
+      <div>
+        <div style="font-weight:700; color:rgba(255,255,255,.86);">Навигация</div>
+        <div style="margin-top:10px; display:grid; gap:8px;">
+          <a href="#services">Направления</a>
+          <a href="#pricing">Тарифы</a>
+          <a href="#faq">FAQ</a>
+          <a href="#contact">Контакты</a>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-weight:700; color:rgba(255,255,255,.86);">Правовая информация</div>
+        <div style="margin-top:10px; display:grid; gap:8px;">
+          <a href="#" onclick="alert('Добавьте ссылку на вашу политику конфиденциальности.'); return false;">Политика конфиденциальности</a>
+          <a href="#" onclick="alert('Добавьте ссылку на оферту/договор.'); return false;">Договор / оферта</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:18px; border-top:1px solid var(--line); padding-top:14px; color:rgba(255,255,255,.60); font-size:12px;">
+      © <span id="year"></span> Репетиторский центр. Все права защищены.
+    </div>
+  </div>
+</footer>
+
+<script>
+  // year
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // mobile menu
+  const burger = document.getElementById("burger");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  burger?.addEventListener("click", () => {
+    const expanded = burger.getAttribute("aria-expanded") === "true";
+    burger.setAttribute("aria-expanded", String(!expanded));
+    mobileMenu.hidden = expanded;
+  });
+
+  // close mobile menu on link click
+  mobileMenu?.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", () => {
+      burger.setAttribute("aria-expanded", "false");
+      mobileMenu.hidden = true;
+    });
+  });
+
+  // form demo submission (no backend)
+  const form = document.getElementById("leadForm");
+  const hint = document.getElementById("formHint");
+
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const data = Object.fromEntries(new FormData(form).entries());
+    // Здесь можно отправить на ваш backend / Google Forms / Telegram bot / Supabase function
+    console.log("Lead:", data);
+
+    hint.textContent = "Заявка сохранена (демо). Подключите отправку на сервер/бота.";
+    form.reset();
+  });
+</script>
+
+</body>
+</html>
