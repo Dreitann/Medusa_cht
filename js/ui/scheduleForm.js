@@ -59,6 +59,8 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
     const btn = document.getElementById(btnId);
     const body = document.getElementById(bodyId);
     if (!btn || !body) return;
+    const setLabel = ()=>{ btn.textContent = body.classList.contains('open') ? 'Свернуть' : 'Раскрыть'; };
+    setLabel();
     btn.addEventListener('click', ()=>{
       const opened = body.classList.toggle('open');
       btn.textContent = opened ? 'Свернуть' : 'Раскрыть';

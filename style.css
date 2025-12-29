@@ -128,6 +128,7 @@ body{
 .field input[type="number"],
 .field input[type="time"],
 .field input[type="date"],
+.field input[type="url"],
 .field select{
   width:100%;
   background:rgba(255,255,255,0.03);
@@ -135,6 +136,8 @@ body{
   border-radius:12px;
   padding:10px 12px;
   color:var(--fg);
+  font-size:16px;
+  appearance:none;
 }
 .field input[type="file"]{padding:12px;}
 .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;}

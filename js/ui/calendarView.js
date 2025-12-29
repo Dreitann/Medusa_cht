@@ -133,8 +133,17 @@ export async function renderCalendar({ scheduleRows=[], error=null, onSelectSche
   });
   host.innerHTML = '';
   calendar.render();
+  // чуть позже подправляем размеры, если контейнер сначала был скрыт
+  setTimeout(()=>{ try{ calendar.updateSize(); }catch(_e){} }, 80);
 
   setHTML(list, hasGoogle
     ? '<li>Выберите дату</li>'
     : '<li>Выберите дату или подключите Google для событий из календаря</li>');
 }
+
+// Когда пользователь переходит на вкладку «Расписание», пересчитываем размеры календаря
+document.addEventListener('tab:change', (e)=>{
+  if (e.detail?.name === 'schedule' && calendar){
+    try{ calendar.updateSize(); }catch(_e){}
+  }
+});

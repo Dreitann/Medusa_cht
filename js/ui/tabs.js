@@ -11,6 +11,8 @@ export function initTabs(){
 
       $$('.tab-bar button').forEach(b=>b.classList.remove('active'));
       $('#btn-'+name)?.classList.add('active');
+
+      document.dispatchEvent(new CustomEvent('tab:change',{ detail:{ name } }));
     });
   });
 }
