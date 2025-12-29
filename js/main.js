@@ -47,13 +47,13 @@ function runApp(){
     getUserId: ()=>userId,
     refreshCalendar: async ()=>{
       await refreshSchedule();
-      await renderNext({ scheduleRows });
+      await renderNext({ scheduleRows, isTeacher, students: studentDirectory });
       await renderCalendar({ scheduleRows, error:scheduleError, onSelectSchedule: isTeacher ? onScheduleSelect : null });
     }
   });
 
   refreshSchedule().then(async ()=>{
-    await renderNext({ scheduleRows });
+    await renderNext({ scheduleRows, isTeacher, students: studentDirectory });
     await renderCalendar({ scheduleRows, error:scheduleError, onSelectSchedule: isTeacher ? onScheduleSelect : null });
   });
 
@@ -121,6 +121,7 @@ async function boot(){
       groupDirectory = await fetchGroups();
       studentDirectory = await fetchStudents();
       setDirectories({ studentList: studentDirectory, groupList: groupDirectory });
+      await renderNext({ scheduleRows, isTeacher, students: studentDirectory });
     }catch(e){
       console.warn('Не удалось загрузить справочники', e);
     }
