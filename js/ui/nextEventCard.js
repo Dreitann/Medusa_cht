@@ -75,21 +75,25 @@ export async function renderNext({ scheduleRows=[], isTeacher=false, students=[]
       setHTML(dst,'События не найдены. Добавьте расписание в Supabase или войдите в Google.');
       return;
     }
-    const list = dayEvents.map(ev=>{
+    const list = dayEvents.map((ev, idx)=>{
       const studentName = students.find(s=>String(s.id)===String(ev.student_id))?.name;
-      const who = studentName
-        ? `${studentName} (ID ${ev.student_id})`
-        : (ev.group_name || `ID ${ev.student_id||''}`);
+      const who = studentName || ev.group_name || '';
       const duration = ev.duration ? ` · ${ev.duration} мин` : '';
       const linkBtn = ev.link ? `<a class="btn ghost tiny event-action" href="${ev.link}" target="_blank">Ссылка</a>` : '';
+      const divider = idx < dayEvents.length-1 ? '<div class="divider"></div>' : '';
       return `
         <li class="next-item">
-          <div class="pill pill-supabase">Supabase</div>
-          <div class="next-info">
-            <div class="next-title">${ev.time || fmtDateTimeRu(ev.start)}${duration} — ${ev.title}</div>
-            <div class="muted small">${who || 'Без ученика'}</div>
+          <div class="next-row">
+            <div class="next-col">
+              <div class="pill pill-supabase">Supabase</div>
+              <div class="next-title">${ev.time || fmtDateTimeRu(ev.start)}${duration} — ${ev.title}</div>
+              <div class="muted small">${who || 'Без ученика'}</div>
+            </div>
+            <div class="next-actions">
+              ${linkBtn || ''}
+            </div>
           </div>
-          ${linkBtn}
+          ${divider}
         </li>`;
     }).join('');
     setHTML(dst, `<div class="muted small" style="margin-bottom:6px;">Ближайший день с занятиями (${dayEvents[0].day})</div><ul class="next-list">${list}</ul>`);
