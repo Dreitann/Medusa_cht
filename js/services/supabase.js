@@ -75,7 +75,7 @@ export async function createSchedule({ user_id, subject, day, time, meet_link, d
   return data;
 }
 
-export async function createScheduleBatch({ user_id, subject, day, time, meet_link, repeatWeeks = 0, duration_minutes, group_name, user_ids=null, student_ids=null, group_id=null }){
+export async function createScheduleBatch({ user_id, subject, day, time, meet_link, repeatWeeks = 0, duration_minutes, group_name, user_ids=null, student_ids=null, group_id=null, status='planned' }){
   requireSupabase();
   const baseDate = new Date(day);
   const rows = [];
@@ -86,7 +86,7 @@ export async function createScheduleBatch({ user_id, subject, day, time, meet_li
       const d = new Date(baseDate);
       d.setDate(d.getDate() + i*7);
       const iso = d.toISOString().slice(0,10);
-      rows.push({ user_id:id, subject, day: iso, time, meet_link, duration_minutes, group_name, group_id });
+      rows.push({ user_id:id, subject, day: iso, time, meet_link, duration_minutes, group_name, group_id, status });
     }
   }
   for (let sid of studentsToUse){
@@ -94,7 +94,7 @@ export async function createScheduleBatch({ user_id, subject, day, time, meet_li
       const d = new Date(baseDate);
       d.setDate(d.getDate() + i*7);
       const iso = d.toISOString().slice(0,10);
-      rows.push({ student_id: sid, subject, day: iso, time, meet_link, duration_minutes, group_name, group_id });
+      rows.push({ student_id: sid, subject, day: iso, time, meet_link, duration_minutes, group_name, group_id, status });
     }
   }
   const { data, error } = await supabase.from('schedule').insert(rows).select();

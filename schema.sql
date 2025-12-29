@@ -28,6 +28,7 @@ create table if not exists schedule (
   day text,
   time text,
   meet_link text,
+  status text default 'planned',
   duration_minutes int,
   group_name text
 );

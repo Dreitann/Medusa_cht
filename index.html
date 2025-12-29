@@ -12,9 +12,6 @@
   <!-- Telegram -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <!-- Google API (onload -> handleClientLoad из services/googleCalendar.js) -->
-  <script src="https://apis.google.com/js/api.js" async defer onload="handleClientLoad()"></script>
-
   <!-- Jitsi -->
   <script src="https://meet.jit.si/external_api.js"></script>
 
@@ -40,7 +37,6 @@
       </div>
       <div class="status-chips">
         <div class="chip status-chip status-idle" data-status-id="supabase"><span class="label">Supabase</span><span class="status-text">—</span></div>
-        <div class="chip status-chip status-idle" data-status-id="google"><span class="label">Google</span><span class="status-text">—</span></div>
         <div class="chip status-chip status-idle" data-status-id="jitsi"><span class="label">Jitsi</span><span class="status-text">Готов</span></div>
       </div>
     </div>
@@ -52,10 +48,9 @@
       <div class="card highlight">
         <div class="card-header">
           <div class="card-title">🚀 Ближайшее событие</div>
-          <div class="muted small">Из Google или расписания</div>
+          <div class="muted small">По расписанию</div>
         </div>
-        <div id="next-event-content">Требуется авторизация Google или заполненное расписание</div>
-        <button id="google-auth-btn" class="btn ghost" style="display:none;">Войти в Google</button>
+        <div id="next-event-content">Добавьте расписание в Supabase.</div>
       </div>
     </section>
 
@@ -89,6 +84,7 @@
               <select id="event-group-select">
                 <option value="">Без группы</option>
               </select>
+              <label class="inline"><input type="checkbox" id="event-group-all"> Для всех в группе</label>
             </label>
             <label class="field">
               <span class="muted small">Тема</span>
@@ -111,6 +107,15 @@
             <label class="field">
               <span class="muted small">Длительность, мин</span>
               <input type="number" min="10" max="300" id="event-duration" value="60">
+            </label>
+
+            <label class="field">
+              <span class="muted small">Статус</span>
+              <select id="event-status">
+                <option value="planned">Запланировано</option>
+                <option value="done">Проведено</option>
+                <option value="cancelled">Отменено</option>
+              </select>
             </label>
 
             <label class="field" style="grid-column:1/2;">

@@ -301,6 +301,10 @@ body{
 }
 .pill-google{background:rgba(125,211,252,0.18);color:#e0f2fe;}
 .pill-supabase{background:rgba(74,222,128,0.18);color:#dcfce7;}
+.pill-status{margin-left:4px;}
+.pill-done{background:rgba(74,222,128,0.2);color:#d1fae5;}
+.pill-cancelled{background:rgba(248,113,113,0.2);color:#fee2e2;}
+.pill-planned{background:rgba(125,211,252,0.14);color:#e0f2fe;}
 
 .video-player{width:100%;border-radius:12px;margin-top:8px;}
 

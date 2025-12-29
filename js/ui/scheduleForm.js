@@ -87,13 +87,20 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
     const duration_minutes = Number($('#event-duration').value || 60);
     const group_name = $('#event-group').value.trim() || null;
     const group_id = $('#event-group-select').value || null;
+    const status = $('#event-status').value || 'planned';
+    const includeGroupMembers = $('#event-group-all')?.checked;
     const baseUserId = getUserId();
 
     if (!subject || !isoDay || !time){
       showToast('Заполните тему, дату и время', 'warn');
       return;
     }
-    if (!resolvedStudentIds.length && !group_id){
+    let studentIdsFinal = [...resolvedStudentIds];
+    if (includeGroupMembers && group_id){
+      const groupStudents = students.filter(s=>String(s.group_id)===String(group_id)).map(s=>s.id);
+      studentIdsFinal = Array.from(new Set([...studentIdsFinal, ...groupStudents]));
+    }
+    if (!studentIdsFinal.length && !group_id){
       showToast('Укажите ученика или выберите группу', 'warn');
       return;
     }
@@ -105,14 +112,15 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
         if (!idNum) throw new Error('Не выбран слот для редактирования');
         await updateSchedule(idNum, {
           user_id: baseUserId,
-          student_id: resolvedStudentIds[0] || null,
+          student_id: studentIdsFinal[0] || null,
           group_id,
           subject,
           day: isoDay,
           time,
           meet_link,
           duration_minutes,
-          group_name
+          group_name,
+          status
         });
         showToast('Событие обновлено', 'info');
       }else{
@@ -126,8 +134,9 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
           duration_minutes,
           group_name,
           user_ids: [],
-          student_ids: resolvedStudentIds,
-          group_id
+          student_ids: studentIdsFinal,
+          group_id,
+          status
         });
         showToast('Событие добавлено', 'info');
       }
@@ -195,6 +204,8 @@ function resetForm(){
   $('#event-duration').value = 60;
   $('#event-group').value = '';
   $('#event-group-select').value = '';
+  $('#event-status').value = 'planned';
+  if ($('#event-group-all')) $('#event-group-all').checked = false;
   $('#event-delete-btn').style.display = 'none';
   $('#event-submit-btn').textContent = 'Создать событие';
 }
@@ -213,6 +224,8 @@ export function selectScheduleForEdit(ev){
   $('#event-duration').value = ev?.duration_minutes || 60;
   $('#event-group').value = ev?.group_name || '';
   $('#event-group-select').value = ev?.group_id || '';
+  $('#event-status').value = ev?.status || 'planned';
+  if ($('#event-group-all')) $('#event-group-all').checked = false;
   if (currentId){
     $('#event-delete-btn').style.display = 'inline-flex';
     $('#event-submit-btn').textContent = 'Сохранить';

@@ -1,6 +1,6 @@
 import { $, setText } from './utils/dom.js';
 import { initTabs } from './ui/tabs.js';
-import { bindGoogleAuthButton, renderNext } from './ui/nextEventCard.js';
+import { renderNext } from './ui/nextEventCard.js';
 import { renderCalendar } from './ui/calendarView.js';
 import { initHomeworkUI, renderHomework } from './ui/homeworkView.js';
 import { initVideoUI, renderVideos } from './ui/videoView.js';
@@ -9,7 +9,6 @@ import { fetchSchedule, ensureUserExists, fetchUserProfile, fetchGroups, fetchSt
 import { SUPABASE_URL, SUPABASE_KEY, TEACHER_IDS } from './config.js';
 import { setStatus } from './ui/status.js';
 import { showToast } from './ui/toast.js';
-import * as gcal from './services/googleCalendar.js';
 import { toggleScheduleForm, selectScheduleForEdit, setDirectories } from './ui/scheduleForm.js';
 
 Telegram.WebApp.ready();
@@ -25,7 +24,6 @@ let studentDirectory = [];
 let groupDirectory = [];
 
 setStatus('supabase', { state:'idle', text:'Ожидание' });
-setStatus('google', { state:'warn', text:'Войти' });
 setStatus('jitsi', { state:'idle', text:'Готов' });
 
 async function refreshSchedule(){
@@ -63,7 +61,6 @@ function runApp(){
 
 initTabs();
 initJitsi();
-bindGoogleAuthButton();
 initHomeworkUI(()=>userId);
 initVideoUI(()=>userId);
 
@@ -185,26 +182,6 @@ if (accessBtn){
     }
   });
 }
-
-// Реагируем на готовность/авторизацию Google
-gcal.onGoogleReady(async ()=>{
-  setStatus('google', gcal.isAuthorized()
-    ? { state:'ok', text:'Подключён' }
-    : { state:'warn', text:'Войти' });
-  if (gcal.isAuthorized()){
-    await renderNext({ scheduleRows });
-    await renderCalendar({ scheduleRows, error:scheduleError, onSelectSchedule: isTeacher ? onScheduleSelect : null });
-  }
-});
-gcal.onSigninChange(async signed=>{
-  setStatus('google', signed
-    ? { state:'ok', text:'Подключён' }
-    : { state:'warn', text:'Войти' });
-  if (signed){
-    await renderNext({ scheduleRows });
-    await renderCalendar({ scheduleRows, error:scheduleError, onSelectSchedule: isTeacher ? onScheduleSelect : null });
-  }
-});
 
 // По умолчанию показываем ближайшее
 document.getElementById('btn-next')?.click();

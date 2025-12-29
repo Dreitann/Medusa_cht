@@ -22,7 +22,8 @@ function mapScheduleToEvents(rows){
         student_id: r.student_id,
         duration_minutes: r.duration_minutes,
         group_name: r.group_name || null,
-        student_name: null
+        student_name: null,
+        status: r.status || 'planned'
       }
     };
   }).filter(Boolean);
@@ -113,7 +114,8 @@ export async function renderCalendar({ scheduleRows=[], error=null, onSelectSche
             const duration = it.extendedProps.duration_minutes ? ` · ${it.extendedProps.duration_minutes} мин` : '';
             const group = it.extendedProps.group_name ? ` · ${it.extendedProps.group_name}` : '';
             const student = it.extendedProps.student_name ? ` · ${it.extendedProps.student_name}` : '';
-            return `<li><span class="pill pill-${src.toLowerCase()}">${src}</span> ${time}${duration}${group}${student} — ${it.title} ${linkBtn} ${editBtn}</li>`;
+            const status = it.extendedProps.status ? `<span class="pill pill-status pill-${it.extendedProps.status}">${it.extendedProps.status}</span>` : '';
+            return `<li><span class="pill pill-${src.toLowerCase()}">${src}</span> ${status} ${time}${duration}${group}${student} — ${it.title} ${linkBtn} ${editBtn}</li>`;
           }).join('')
         : `<li>Нет событий на ${day}</li>`);
       if (onSelectSchedule){
