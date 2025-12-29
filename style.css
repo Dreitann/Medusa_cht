@@ -185,6 +185,12 @@ body{
 .fc .fc-toolbar.fc-header-toolbar{
   margin-bottom:10px;
 }
+.fc .fc-col-header-cell-cushion{
+  color:#cdd4ea;
+  text-transform:uppercase;
+  letter-spacing:0.04em;
+  font-size:11px;
+}
 .fc-toolbar-title{
   font-size:20px;
   font-weight:800;
@@ -260,6 +266,28 @@ body{
 .fc .fc-button-primary, .fc .fc-button-primary:not(:disabled){height:38px;min-width:46px;padding:6px 10px;}
 .fc .fc-toolbar-chunk{display:flex;align-items:center;gap:6px;}
 .fc-theme-standard td, .fc-theme-standard th{border:1px solid var(--border);}
+.fc .fc-daygrid-day-top{
+  flex-direction:row;
+  justify-content:space-between;
+  padding:4px 6px;
+}
+.fc .fc-daygrid-day-number{color:#e5edff;font-weight:700;}
+.fc .fc-daygrid-event{
+  background:rgba(66,133,244,0.25);
+  border:none;
+  color:#e5f3ff;
+  border-radius:10px;
+  padding:4px 6px;
+  font-weight:800;
+  box-shadow:0 4px 10px rgba(0,0,0,0.25);
+}
+.fc .fc-daygrid-event .fc-event-title{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.fc .fc-daygrid-dot-event{padding:2px 4px;}
+.fc .fc-daygrid-dot-event .fc-event-title{font-weight:700;}
 
 .pill{
   display:inline-block;

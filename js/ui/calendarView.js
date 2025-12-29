@@ -74,6 +74,9 @@ export async function renderCalendar({ scheduleRows=[], error=null, onSelectSche
   calendar = new FullCalendar.Calendar(host, {
     initialView:'dayGridMonth',
     locale:'ru',
+    firstDay: 1,
+    eventDisplay:'block',
+    dayMaxEventRows: 4,
     events,
     eventClick: info => {
       const link = info.event.extendedProps.link;
