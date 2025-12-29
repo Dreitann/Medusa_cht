@@ -55,6 +55,18 @@ export function toggleScheduleForm({ isTeacher, getUserId, refreshCalendar }){
   if (card.dataset.bound) return;
   card.dataset.bound = '1';
 
+  const toggleArea = (btnId, bodyId)=>{
+    const btn = document.getElementById(btnId);
+    const body = document.getElementById(bodyId);
+    if (!btn || !body) return;
+    btn.addEventListener('click', ()=>{
+      const opened = body.classList.toggle('open');
+      btn.textContent = opened ? 'Свернуть' : 'Раскрыть';
+    });
+  };
+  toggleArea('toggle-event-form','event-form-body');
+  toggleArea('toggle-directory','directory-body');
+
   $('#event-student-name')?.addEventListener('input', ()=>{
     const resolved = resolveStudentIds($('#event-student-name').value);
     $('#event-student-ids').value = resolved.length ? resolved.join(', ') : '—';

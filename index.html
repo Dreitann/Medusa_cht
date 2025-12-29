@@ -65,7 +65,11 @@
         <div class="card-title">📅 Расписание</div>
 
         <div id="teacher-schedule-card" class="card subcard" style="display:none;">
-          <div class="card-title">➕ Добавить событие ученику</div>
+          <div class="card-header" style="align-items:center;gap:8px;">
+            <div class="card-title" style="margin:0;">➕ Добавить событие ученику</div>
+            <button class="btn ghost tiny" id="toggle-event-form">Свернуть</button>
+          </div>
+          <div id="event-form-body" class="collapsible-body open">
           <div class="grid-2">
             <input type="hidden" id="event-id">
 
@@ -122,9 +126,14 @@
             <button class="btn full" id="event-submit-btn">Создать событие</button>
             <button class="btn ghost full" id="event-delete-btn" style="display:none;">Удалить</button>
           </div>
+          </div>
 
           <div class="card subcard" id="directory-card">
-            <div class="card-title">Справочник: группы и ученики</div>
+            <div class="card-header" style="align-items:center;gap:8px;">
+              <div class="card-title" style="margin:0;">Справочник: группы и ученики</div>
+              <button class="btn ghost tiny" id="toggle-directory">Свернуть</button>
+            </div>
+            <div id="directory-body" class="collapsible-body open">
             <div class="grid-2">
               <label class="field">
                 <span class="muted small">Название группы</span>
@@ -148,6 +157,7 @@
               <div class="button-row">
                 <button class="btn ghost full" id="student-create-btn">Создать/обновить ученика</button>
               </div>
+            </div>
             </div>
           </div>
         </div>

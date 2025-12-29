@@ -5,7 +5,7 @@ import { renderCalendar } from './ui/calendarView.js';
 import { initHomeworkUI, renderHomework } from './ui/homeworkView.js';
 import { initVideoUI, renderVideos } from './ui/videoView.js';
 import { initJitsi } from './ui/jitsiView.js';
-import { fetchSchedule, ensureUserExists, fetchUserProfile, fetchGroups, fetchStudents } from './services/supabase.js';
+import { fetchSchedule, ensureUserExists, fetchUserProfile, fetchGroups, fetchStudents, createOrUpdateStudent } from './services/supabase.js';
 import { SUPABASE_URL, SUPABASE_KEY, TEACHER_IDS } from './config.js';
 import { setStatus } from './ui/status.js';
 import { showToast } from './ui/toast.js';
@@ -79,6 +79,14 @@ async function boot(){
   try{
     const profile = await fetchUserProfile(userId);
     if (profile?.role === 'teacher') isTeacher = true;
+    if (profile?.role === 'student'){
+      // Синхронизируем студента в справочник, чтобы учитель мог сразу находить по имени/ID
+      try{
+        await createOrUpdateStudent({ id: userId, name: tgUser.first_name || 'Студент', group_id: null });
+      }catch(syncErr){
+        console.warn('Не удалось синхронизировать ученика в справочник', syncErr);
+      }
+    }
     if (profile?.role){
       hasRole = true;
       const roleEl = document.getElementById('student-role');
@@ -166,7 +174,11 @@ if (accessBtn){
       await ensureUserExists({ id:userId, first_name: tgUser.first_name || 'Студент' });
       showToast('Данные переданы. Ждите назначения роли.', 'info');
       const gate = document.getElementById('access-gate');
+      const msg = document.getElementById('access-msg');
       if (gate) gate.style.display = 'flex';
+      if (msg) msg.textContent = 'Мы получили ваш ID. Доступ откроется после назначения роли.';
+      accessBtn.textContent = 'Запрос отправлен';
+      accessBtn.disabled = true;
     }catch(e){
       showToast('Не удалось передать данные: '+e.message, 'error');
     }

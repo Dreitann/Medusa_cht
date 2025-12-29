@@ -137,9 +137,21 @@ body{
   color:var(--fg);
 }
 .field input[type="file"]{padding:12px;}
-.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;}
 #teacher-schedule-card .grid-2{align-items:flex-start;}
 #teacher-schedule-card input[type="url"]{width:100%;}
+
+.collapsible-body{display:none;}
+.collapsible-body.open{display:block;}
+
+@media (max-width:640px){
+  .grid-2,
+  #teacher-schedule-card .grid-2{
+    grid-template-columns:1fr;
+  }
+  .button-row{flex-direction:column;}
+  .card{padding:14px;}
+}
 
 .button-row{display:flex;gap:8px;flex-wrap:wrap}
 
