@@ -160,6 +160,7 @@ body{
 .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;}
 #teacher-schedule-card .grid-2{align-items:flex-start;grid-template-columns:1fr;}
 #teacher-schedule-card .grid-1-sm{grid-template-columns:1fr;}
+#teacher-schedule-card .grid-pairs{display:grid;grid-template-columns:1fr;gap:10px;}
 #teacher-schedule-card input[type="url"]{width:100%;}
 #teacher-schedule-card .field{gap:6px;margin-bottom:12px;}
 #teacher-schedule-card .field .muted.small{font-size:12px;}
@@ -183,6 +184,9 @@ body{
 }
 @media (max-width:900px){
   #teacher-schedule-card .grid-2{grid-template-columns:1fr;}
+}
+@media (min-width:961px){
+  #teacher-schedule-card .grid-pairs{grid-template-columns:repeat(2,minmax(260px,1fr));}
 }
 
 .button-row{display:flex;gap:8px;flex-wrap:wrap}

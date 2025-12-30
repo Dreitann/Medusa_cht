@@ -79,55 +79,59 @@
             </label>
             <div class="helper span2">Можно ввести несколько через запятую; событие создастся для каждого ученика.</div>
 
-            <div class="group-row">
-              <label class="field">
-                <span class="muted small">Группа</span>
-                <select id="event-group-select">
-                  <option value="">Без группы</option>
-                </select>
-              </label>
+            <label class="field">
+              <span class="muted small">Группа</span>
+              <select id="event-group-select">
+                <option value="">Без группы</option>
+              </select>
               <label class="inline-check">
                 <input type="checkbox" id="event-group-all">
                 <span>Создать для всех в группе</span>
               </label>
+            </label>
+
+            <div class="grid-pairs">
+              <label class="field">
+                <span class="muted small">Тема</span>
+                <input type="text" id="event-subject" placeholder="Например: Математика">
+              </label>
+              <label class="field">
+                <span class="muted small">Дата</span>
+                <input type="date" id="event-date">
+              </label>
             </div>
-            <label class="field">
-              <span class="muted small">Тема</span>
-              <input type="text" id="event-subject" placeholder="Например: Математика">
-            </label>
+
+            <div class="grid-pairs">
+              <label class="field">
+                <span class="muted small">Время</span>
+                <input type="time" id="event-time">
+              </label>
+              <label class="field">
+                <span class="muted small">Длительность, мин</span>
+                <input type="number" min="10" max="300" id="event-duration" value="60">
+              </label>
+            </div>
+
+            <div class="grid-pairs">
+              <label class="field">
+                <span class="muted small">Повторять N недель</span>
+                <input type="number" min="0" max="100" id="event-repeat" value="0">
+              </label>
+              <label class="field">
+                <span class="muted small">Статус</span>
+                <select id="event-status">
+                  <option value="planned">Запланировано</option>
+                  <option value="done">Проведено</option>
+                  <option value="cancelled">Отменено</option>
+                </select>
+              </label>
+            </div>
 
             <label class="field">
-              <span class="muted small">Дата</span>
-              <input type="date" id="event-date">
-            </label>
-            <label class="field">
-              <span class="muted small">Время</span>
-              <input type="time" id="event-time">
-            </label>
-
-            <label class="field">
-              <span class="muted small">Повторять N недель</span>
-              <input type="number" min="0" max="100" id="event-repeat" value="0">
-            </label>
-            <label class="field">
-              <span class="muted small">Длительность, мин</span>
-              <input type="number" min="10" max="100" id="event-duration" value="60">
-            </label>
-
-            <label class="field">
-              <span class="muted small">Статус</span>
-              <select id="event-status">
-                <option value="planned">Запланировано</option>
-                <option value="done">Проведено</option>
-                <option value="cancelled">Отменено</option>
-              </select>
-            </label>
-
-            <label class="field" style="grid-column:1/2;">
               <span class="muted small">Группа/класс (опционально)</span>
               <input type="text" id="event-group" placeholder="Например: 7А или Группа 3">
             </label>
-            <label class="field" style="grid-column:1/3;">
+            <label class="field">
               <span class="muted small">Ссылка на встречу (опционально)</span>
               <input type="url" id="event-link" placeholder="https://meet...">
             </label>
