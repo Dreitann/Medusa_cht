@@ -189,3 +189,18 @@ document.getElementById('btn-next')?.click();
 function onScheduleSelect(ev){
   selectScheduleForEdit(ev);
 }
+
+// Обработка смены статуса занятия (для учителя)
+document.addEventListener('schedule:mark-status', async (e)=>{
+  const { id, status } = e.detail || {};
+  if (!isTeacher || !id || !status) return;
+  try{
+    await updateSchedule(id, { status });
+    showToast('Статус обновлён', 'info');
+    await refreshSchedule();
+    await renderNext({ scheduleRows, isTeacher, students: studentDirectory });
+    await renderCalendar({ scheduleRows, error:scheduleError, onSelectSchedule: isTeacher ? onScheduleSelect : null });
+  }catch(err){
+    showToast('Не удалось обновить статус: '+err.message, 'error');
+  }
+});

@@ -115,7 +115,11 @@ export async function renderCalendar({ scheduleRows=[], error=null, onSelectSche
             const group = it.extendedProps.group_name ? ` · ${it.extendedProps.group_name}` : '';
             const student = it.extendedProps.student_name ? ` · ${it.extendedProps.student_name}` : '';
             const status = it.extendedProps.status ? `<span class="pill pill-status pill-${it.extendedProps.status}">${it.extendedProps.status}</span>` : '';
-            return `<li><span class="pill pill-${src.toLowerCase()}">${src}</span> ${status} ${time}${duration}${group}${student} — ${it.title} ${linkBtn} ${editBtn}</li>`;
+            const statusBtns = onSelectSchedule && it.extendedProps.provider === 'schedule'
+              ? `<button class="btn tiny ghost event-action event-mark" data-id="${it.id||''}" data-status="done">Проведено</button>
+                 <button class="btn tiny ghost event-action event-mark" data-id="${it.id||''}" data-status="cancelled">Отменено</button>`
+              : '';
+            return `<li><span class="pill pill-${src.toLowerCase()}">${src}</span> ${status} ${time}${duration}${group}${student} — ${it.title} ${linkBtn} ${editBtn} ${statusBtns}</li>`;
           }).join('')
         : `<li>Нет событий на ${day}</li>`);
       if (onSelectSchedule){
@@ -131,6 +135,14 @@ export async function renderCalendar({ scheduleRows=[], error=null, onSelectSche
               duration_minutes: btn.dataset.duration,
               group_name: btn.dataset.group
             });
+          });
+        });
+        list.querySelectorAll('.event-mark').forEach(btn=>{
+          btn.addEventListener('click', ()=>{
+            const id = Number(btn.dataset.id);
+            const status = btn.dataset.status;
+            if (!id || !status) return;
+            document.dispatchEvent(new CustomEvent('schedule:mark-status',{ detail:{ id, status } }));
           });
         });
       }
