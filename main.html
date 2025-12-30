@@ -49,6 +49,7 @@
       padding:14px 0;
       gap:16px;
     }
+    .nav-left{display:flex;align-items:center;gap:20px;}
     .brand{
       display:flex; align-items:center; gap:10px;
       font-weight:700;
@@ -86,6 +87,10 @@
       cursor:pointer;
       user-select:none;
       font-weight:600;
+    }
+    .btn.ghost{
+      border-color: rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
     }
     .btn:hover{ background: rgba(255,255,255,.09); }
     .btn.primary{
@@ -423,22 +428,23 @@
 <header>
   <div class="container">
     <div class="nav">
-      <a class="brand" href="#top" aria-label="На главную">
-        <span class="logo" aria-hidden="true"></span>
-        <span>Mentorium</span>
-      </a>
-
-      <nav class="navlinks" aria-label="Навигация">
-        <a href="#services">Направления</a>
-        <a href="#how">Как работаем</a>
-        <a href="#teachers">Преподаватели</a>
-        <a href="#pricing">Тарифы</a>
-        <a href="#faq">FAQ</a>
-        <a href="#contact">Контакты</a>
-      </nav>
+      <div class="nav-left">
+        <a class="brand" href="#top" aria-label="На главную">
+          <span class="logo" aria-hidden="true"></span>
+          <span class="brand-name">Mentorium</span>
+        </a>
+        <nav class="navlinks" aria-label="Навигация">
+          <a href="#services">Направления</a>
+          <a href="#how">Как работаем</a>
+          <a href="#teachers">Преподаватели</a>
+          <a href="#pricing">Тарифы</a>
+          <a href="#faq">FAQ</a>
+          <a href="#contact">Контакты</a>
+        </nav>
+      </div>
 
       <div class="cta">
-        <a class="btn" href="#contact">Задать вопрос</a>
+        <a class="btn ghost" href="#contact">Задать вопрос</a>
         <a class="btn primary" href="#contact">Записаться</a>
         <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false">
           <span></span><span></span><span></span>
@@ -466,7 +472,7 @@
           <h1>Репетиторский центр, где есть план, контроль прогресса и результат.</h1>
           <p class="lead">
             Диагностика → индивидуальная программа → занятия → домашние задания → отчёты по прогрессу.
-            Математика, английский, физика, информатика, подготовка к ОГЭ/ЕГЭ и вступительным.
+            Математика, английский, физика, информатика, подготовка к ОГЭ/ЕГЭ/ЦТ и вступительным.
           </p>
 
           <div class="hero-actions">
@@ -513,7 +519,7 @@
           <h3>Математика</h3>
           <p>Алгебра/геометрия, разбор пробелов, системное решение задач.</p>
           <ul>
-            <li>ОГЭ / ЕГЭ (база и профиль)</li>
+            <li>ОГЭ / ЕГЭ / ЦТ (база и профиль)</li>
             <li>Контрольные, ВПР, вступительные</li>
             <li>Логика и техника оформления</li>
           </ul>
@@ -524,7 +530,7 @@
           <p>Грамматика + разговорная практика + навыки экзамена.</p>
           <ul>
             <li>Школа и университет</li>
-            <li>ОГЭ / ЕГЭ, PET/FCE при необходимости</li>
+            <li>ОГЭ / ЕГЭ / ЦТ, PET/FCE при необходимости</li>
             <li>Словарь и понимание на слух</li>
           </ul>
         </div>
@@ -629,7 +635,7 @@
           <h3>Мини-группа</h3>
           <p>2 занятия в неделю, группа до 6 человек, домашние задания и отчёт.</p>
           <div class="price">
-            <strong>€79</strong>
+            <strong>$79</strong>
             <span>в месяц</span>
           </div>
           <div style="margin-top:12px">
@@ -641,7 +647,7 @@
           <h3>Стандарт</h3>
           <p>1 индивидуальное + 1 мини-группа в неделю. Баланс темпа и контроля.</p>
           <div class="price">
-            <strong>€149</strong>
+            <strong>$149</strong>
             <span>в месяц</span>
           </div>
           <div style="margin-top:12px">
@@ -653,7 +659,7 @@
           <h3>Индивидуальный</h3>
           <p>2 индивидуальных занятия в неделю + разбор пробников и стратегия.</p>
           <div class="price">
-            <strong>€219</strong>
+            <strong>$219</strong>
             <span>в месяц</span>
           </div>
           <div style="margin-top:12px">
@@ -742,6 +748,7 @@
               <option value="" disabled selected>Выберите цель</option>
               <option>Повысить успеваемость</option>
               <option>Подготовка к ОГЭ</option>
+              <option>Подготовка к ЦТ</option>
               <option>Подготовка к ЕГЭ</option>
               <option>Вступительные / экзамен</option>
               <option>Олимпиадная подготовка</option>
@@ -765,8 +772,8 @@
           <h3 style="margin:0 0 8px;">Контакты</h3>
           <p style="margin:0; color:var(--muted); font-size:14px;">
             Адрес: <span style="color:rgba(255,255,255,.85)">укажите ваш адрес</span><br/>
-            Телефон: <span style="color:rgba(255,255,255,.85)">+33 …</span><br/>
-            Telegram: <span style="color:rgba(255,255,255,.85)">@your_center</span><br/>
+            Телефон: <span style="color:rgba(255,255,255,.85)">+375 …</span><br/>
+            Telegram: <span style="color:rgba(255,255,255,.85)">@Mentorium42</span><br/>
             Время работы: <span style="color:rgba(255,255,255,.85)">Пн–Сб 10:00–20:00</span>
           </p>
 
