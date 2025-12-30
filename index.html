@@ -79,13 +79,18 @@
             </label>
             <div class="helper span2">Можно ввести несколько через запятую; событие создастся для каждого ученика.</div>
 
-            <label class="field">
-              <span class="muted small">Группа</span>
-              <select id="event-group-select">
-                <option value="">Без группы</option>
-              </select>
-              <label class="inline-check"><input type="checkbox" id="event-group-all"> <span>Создать для всех в группе</span></label>
-            </label>
+            <div class="group-row">
+              <label class="field">
+                <span class="muted small">Группа</span>
+                <select id="event-group-select">
+                  <option value="">Без группы</option>
+                </select>
+              </label>
+              <label class="inline-check">
+                <input type="checkbox" id="event-group-all">
+                <span>Создать для всех в группе</span>
+              </label>
+            </div>
             <label class="field">
               <span class="muted small">Тема</span>
               <input type="text" id="event-subject" placeholder="Например: Математика">
