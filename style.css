@@ -158,6 +158,7 @@ body{
 .field input[type="file"]{padding:12px;}
 .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;}
 #teacher-schedule-card .grid-2{align-items:flex-start;}
+#teacher-schedule-card .grid-1-sm{grid-template-columns:1fr;}
 #teacher-schedule-card input[type="url"]{width:100%;}
 #teacher-schedule-card .field{gap:4px;margin-bottom:8px;}
 #teacher-schedule-card .field .muted.small{font-size:12px;}
